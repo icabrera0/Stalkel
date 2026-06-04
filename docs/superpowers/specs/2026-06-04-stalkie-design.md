@@ -168,7 +168,15 @@ Each app has a pool of **12–16 possible evidence items**. Per run, 3–5 items
 
 ---
 
-## 6. Evidence Board
+## 6. Evidence Gathering Mechanic
+
+**Two-step: inspect → screenshot.** Every tappable item in an app opens a **detail view** — a close-up of that content (full DM thread, transaction detail, photo, location entry, etc.). Inside the detail view a **📸 Capturar / Screenshot** button triggers a camera-flash animation and adds the item to the evidence board as a polaroid card.
+
+**No visual cues.** Nothing glows, highlights, or indicates that an item is tappable. The player must poke around every element themselves. Filler content (normal messages, boring transactions) is also tappable and opens a detail view — it just has nothing worth screenshotting. This makes the investigation genuinely challenging: the player cannot distinguish real evidence from red herrings or filler by looking at the app; only context and judgment guide them.
+
+**Everything is tappable.** Posts, messages, transactions, photos, map pins, contacts — all open a detail view. The player decides what matters.
+
+## 7. Evidence Board
 
 Floating button on the phone frame. Opens a full-screen overlay styled as a corkboard with polaroid-style cards pinned to it. Each collected item shows:
 - App icon (source)
@@ -179,7 +187,7 @@ The player can collect between 0 and all available evidence before making a verd
 
 ---
 
-## 7. Verdict & Reveal Screen
+## 8. Verdict & Reveal Screen
 
 Player taps "Dar veredicto" / "Make verdict" from the evidence board or home screen. Two big buttons:
 - **Infiel / Cheater** (red)
@@ -195,7 +203,7 @@ Player taps "Dar veredicto" / "Make verdict" from the evidence board or home scr
 
 ---
 
-## 8. Language System
+## 9. Language System
 
 A `LANG` constant (`'es'` | `'en'`) is set at game start from the main menu choice and passed into all content generators. Every string in the game — UI labels, generated messages, app content, names, transaction descriptions — comes from a `t(key)` translation function. Spanish uses Spanish names, Spanish cities, euros (€). English uses English names, UK/US cities, pounds/dollars.
 
@@ -203,7 +211,7 @@ Main menu: two buttons, `Español` and `English`. Choice stored in `localStorage
 
 ---
 
-## 9. File Structure
+## 10. File Structure
 
 ```
 index.html          — main entry, menu + game shell
@@ -236,13 +244,13 @@ No build step. Open `index.html` in any browser. Deploy to GitHub Pages by pushi
 
 ---
 
-## 10. Auto-Deploy to GitHub Pages
+## 11. Auto-Deploy to GitHub Pages
 
 A `.github/workflows/deploy.yml` deploys the `main` branch to GitHub Pages on every push. No build step needed — source files are the deployed files.
 
 ---
 
-## 11. Testing Plan
+## 12. Testing Plan
 
 - **Generation test**: run the generator 100 times with different seeds, assert all outputs are valid scenario objects with the right shape
 - **Evidence selection test**: assert no run has duplicate evidence IDs, assert guilty runs have ≥5 real evidence items, innocent runs have 0
