@@ -53,11 +53,19 @@ Visual companion is running. User accepted browser-based mockups.
 - ✅ Task 2: RNG module (mulberry32) — 5/5 tests
 - ✅ Task 3: i18n module (138 keys ES+EN, full pools) — 5/5 tests  
 - ✅ Task 4: Scenario generator (all 7 apps, evidence selection) — 14/14 tests
-- ✅ Task 5: Phone frame + CSS (style.css 649 lines, apps.css 854 lines)
+- ✅ Task 5: Phone frame + CSS (style.css, apps.css)
 - ✅ Task 6: Phone controller (js/phone.js) + index.html phone structure
-- ✅ Task 7: Instagram app (tabs, detail views, capture mechanic)
+- ✅ Task 7: Instagram app (Feed/DMs/Activity tabs, detail views, capture)
 - ✅ Task 8: WhatsApp app (threads, chat bubbles, voice/location/deleted msgs)
+- ✅ Task 9: Revolut app (balance card, transaction list, detail view)
+- ✅ Task 10: Twitter app (4 tabs, tweet/like/following/dm_notif)
+- ✅ Task 11: Maps app (4 tabs, saved/recent/timeline/shared, fake map)
+- ✅ Task 12: Gallery app (3-col grid, 3 album tabs, full-screen detail)
+- ✅ Task 13: Messages app (iMessage-style, thread list, chat bubbles)
+- ✅ Task 14: Evidence board (corkboard, polaroids, dedup, verdict button)
+- ✅ Task 15: Verdict + reveal (4 outcome cases, story, missed evidence)
+- ✅ Task 16: Main entry (menu, intro animation, full game wire-up)
+- ✅ Task 17: GitHub Actions deploy to GitHub Pages
+- ⬜ Task 18: E2E test (pending — needs browser verification)
 
-## In Progress
-
-- 🔄 Task 9: Revolut App (Tasks 5–8 all ✅)
+## IMPLEMENTATION COMPLETE — Pending E2E Test (Task 18)
