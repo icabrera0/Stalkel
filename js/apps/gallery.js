@@ -1,5 +1,5 @@
 import { audio } from '../audio.js';
-import { photoUrl } from '../photos.js';
+import { photoUrl, evidencePhotoEl } from '../photos.js';
 
 export function render(container, data, scenario, t, onCapture) {
   if (!data || !data.items) return;
@@ -53,10 +53,15 @@ export function render(container, data, scenario, t, onCapture) {
     // Real photo
     const photoPlaceholder = document.createElement('div');
     photoPlaceholder.style.cssText = 'width:100%;aspect-ratio:1;border-radius:8px;overflow:hidden;margin-bottom:16px;background:#f0f0f0;';
-    const img = document.createElement('img');
-    img.src = photoUrl(item.id || 'gal_detail');
-    img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
-    photoPlaceholder.appendChild(img);
+    const evEl = evidencePhotoEl(item.evidenceId, item.caption);
+    if (evEl) {
+      photoPlaceholder.appendChild(evEl);
+    } else {
+      const img = document.createElement('img');
+      img.src = photoUrl(item.id || 'gal_detail');
+      img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+      photoPlaceholder.appendChild(img);
+    }
     content.appendChild(photoPlaceholder);
 
     // Date caption
@@ -152,11 +157,16 @@ export function render(container, data, scenario, t, onCapture) {
           const cell = document.createElement('div');
           cell.className = 'gal-photo-item';
           cell.style.cssText = 'overflow:hidden;position:relative;cursor:pointer;background:#f0f0f0;';
-          const thumbImg = document.createElement('img');
-          thumbImg.src = photoUrl(item.id || 'gal_thumb', 120);
-          thumbImg.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
-          thumbImg.loading = 'lazy';
-          cell.appendChild(thumbImg);
+          const evThumb = evidencePhotoEl(item.evidenceId, item.caption);
+          if (evThumb) {
+            cell.appendChild(evThumb);
+          } else {
+            const thumbImg = document.createElement('img');
+            thumbImg.src = photoUrl(item.id || 'gal_thumb', 120);
+            thumbImg.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+            thumbImg.loading = 'lazy';
+            cell.appendChild(thumbImg);
+          }
           cell.addEventListener('click', () => showDetail(item, buildMain));
           grid.appendChild(cell);
         });

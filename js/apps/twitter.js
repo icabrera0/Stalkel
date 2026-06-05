@@ -328,16 +328,27 @@ export function render(container, data, scenario, t, onCapture) {
     const paraSection = document.createElement('div');
     paraSection.dataset.section = '0';
 
-    // DM notification banner
+    // DM notification banner — prominent card with pulsing dot
     if (dmNotifItem) {
       const banner = document.createElement('div');
-      banner.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px 16px;background:#1da1f2;cursor:pointer;';
+      banner.style.cssText = [
+        'display:flex;align-items:center;gap:12px;',
+        'padding:14px 16px;',
+        'background:linear-gradient(90deg,#0d47a1,#1565c0);',
+        'cursor:pointer;',
+        'border-bottom:2px solid #1da1f2;',
+      ].join('');
       banner.innerHTML = `
-        ${avatar(dmNotifItem.username, dmNotifItem.avatarColor, 'md')}
+        <div style="position:relative;">
+          ${avatar(dmNotifItem.username, dmNotifItem.avatarColor, 'md')}
+          <span style="position:absolute;top:-2px;right:-2px;width:10px;height:10px;background:#ff4757;border-radius:50%;border:2px solid #000;animation:tw-pulse 1.4s ease-in-out infinite;"></span>
+        </div>
         <div style="flex:1;min-width:0;">
-          <div style="font-size:13px;font-weight:700;color:white;">💬 ${esc(dmNotifItem.username)}</div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.85);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(dmNotifItem.preview)}</div>
-        </div>`;
+          <div style="font-size:11px;font-weight:800;color:#90caf9;letter-spacing:0.5px;margin-bottom:2px;">💬 MENSAJE DIRECTO NUEVO</div>
+          <div style="font-size:13px;font-weight:700;color:white;">${esc(dmNotifItem.username)}</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.8);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(dmNotifItem.preview)}</div>
+        </div>
+        <div style="font-size:10px;font-weight:700;background:#ff4757;color:white;padding:3px 8px;border-radius:10px;flex-shrink:0;">NUEVO</div>`;
       banner.addEventListener('click', () => showDetail(dmNotifItem, buildMain));
       paraSection.appendChild(banner);
     }
@@ -346,7 +357,18 @@ export function render(container, data, scenario, t, onCapture) {
       paraSection.appendChild(buildTweetCard(item));
     });
 
-    if (tweetItems.length === 0 && !dmNotifItem) {
+    // Also show like activity in "Para ti" so players don't miss it
+    if (likeItems.length > 0) {
+      const likeHdr = document.createElement('div');
+      likeHdr.style.cssText = 'padding:10px 16px 8px;font-size:12px;font-weight:700;color:#71767b;border-top:1px solid #2f3336;letter-spacing:0.3px;';
+      likeHdr.textContent = '❤️ Actividad de likes';
+      paraSection.appendChild(likeHdr);
+      likeItems.forEach(item => {
+        paraSection.appendChild(buildLikeCard(item));
+      });
+    }
+
+    if (tweetItems.length === 0 && !dmNotifItem && likeItems.length === 0) {
       paraSection.innerHTML = '<div style="padding:32px;text-align:center;color:#71767b;font-size:13px;">No hay tweets</div>';
     }
 
@@ -413,6 +435,14 @@ export function render(container, data, scenario, t, onCapture) {
     });
 
     activateTab(0);
+  }
+
+  // Inject pulse keyframe once
+  if (!document.getElementById('tw-pulse-style')) {
+    const s = document.createElement('style');
+    s.id = 'tw-pulse-style';
+    s.textContent = '@keyframes tw-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.6;transform:scale(1.3)}}';
+    document.head.appendChild(s);
   }
 
   // Set up flex container

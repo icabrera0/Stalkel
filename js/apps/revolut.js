@@ -74,10 +74,18 @@ export function render(container, data, scenario, t, onCapture) {
     const emoji = extractEmoji(item.category || '💳');
     const iconBg = expense ? '#ffe0e6' : '#e0ffe6';
     const noteHtml = item.note
-      ? `<div style="padding:12px 16px;background:white;margin-top:8px;border-top:1px solid #f0f0f0;border-bottom:1px solid #f0f0f0;">
-           <div style="font-size:11px;color:#999;margin-bottom:4px;">NOTA</div>
-           <div style="font-size:13px;color:#666;">${esc(item.note)}</div>
-         </div>`
+      ? item.evidenceId
+        ? `<div style="padding:14px 16px;background:#fff8e1;margin-top:8px;border-top:2px solid #ff8f00;border-bottom:2px solid #ff8f00;display:flex;align-items:center;gap:12px;">
+             <span style="font-size:26px;">👥</span>
+             <div>
+               <div style="font-size:11px;font-weight:800;color:#e65100;letter-spacing:0.5px;margin-bottom:3px;">NOTA DEL COMERCIO</div>
+               <div style="font-size:15px;font-weight:700;color:#333;">${esc(item.note)}</div>
+             </div>
+           </div>`
+        : `<div style="padding:12px 16px;background:white;margin-top:8px;border-top:1px solid #f0f0f0;border-bottom:1px solid #f0f0f0;">
+             <div style="font-size:11px;color:#999;margin-bottom:4px;">NOTA</div>
+             <div style="font-size:13px;color:#666;">${esc(item.note)}</div>
+           </div>`
       : '';
 
     const detailHtml = `

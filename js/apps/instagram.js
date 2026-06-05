@@ -1,5 +1,5 @@
 import { audio } from '../audio.js';
-import { photoUrl } from '../photos.js';
+import { photoUrl, evidencePhotoEl } from '../photos.js';
 
 export function render(container, data, scenario, t, onCapture) {
   if (!data || !data.items) return;
@@ -68,13 +68,18 @@ export function render(container, data, scenario, t, onCapture) {
     }
 
     content.innerHTML = bodyHtml;
-    // Replace feed image placeholders with real photos
+    // Replace feed image placeholders with evidence card or real photos
     content.querySelectorAll('.ig-feed-image').forEach(el => {
-      const img = document.createElement('img');
-      img.src = photoUrl(el.dataset.seed || 'ig_fallback');
-      img.style.cssText = 'width:100%;aspect-ratio:1;object-fit:cover;display:block;';
-      img.loading = 'lazy';
-      el.appendChild(img);
+      const evCard = evidencePhotoEl(el.dataset.evidenceid || '', null);
+      if (evCard) {
+        el.appendChild(evCard);
+      } else {
+        const img = document.createElement('img');
+        img.src = photoUrl(el.dataset.seed || 'ig_fallback');
+        img.style.cssText = 'width:100%;aspect-ratio:1;object-fit:cover;display:block;';
+        img.loading = 'lazy';
+        el.appendChild(img);
+      }
     });
     detail.appendChild(content);
 
@@ -131,7 +136,7 @@ export function render(container, data, scenario, t, onCapture) {
         </div>
         <span style="font-size:18px;color:#000;">⋯</span>
       </div>
-      <div class="ig-feed-image" data-seed="${item.id || 'ig'}" style="width:100%;aspect-ratio:1;overflow:hidden;"></div>
+      <div class="ig-feed-image" data-seed="${item.id || 'ig'}" data-evidenceid="${item.evidenceId || ''}" style="width:100%;aspect-ratio:1;overflow:hidden;"></div>
       <div class="ig-item-actions">
         <span class="ig-item-action">🤍</span>
         <span class="ig-item-action">💬</span>
@@ -299,14 +304,19 @@ export function render(container, data, scenario, t, onCapture) {
         ${commentHtml}
         <div class="ig-item-timestamp">${item.timeAgo || ''}</div>`;
       card.style.cursor = 'pointer';
-      // Replace image placeholder with real photo
+      // Replace image placeholder with evidence card or real photo
       const imgDiv = card.querySelector('.ig-item-image');
       if (imgDiv) {
-        const img = document.createElement('img');
-        img.src = photoUrl(item.id || 'ig_filler');
-        img.style.cssText = 'width:100%;aspect-ratio:1;object-fit:cover;display:block;';
-        img.loading = 'lazy';
-        imgDiv.appendChild(img);
+        const evCard = evidencePhotoEl(item.evidenceId, item.caption);
+        if (evCard) {
+          imgDiv.appendChild(evCard);
+        } else {
+          const img = document.createElement('img');
+          img.src = photoUrl(item.id || 'ig_filler');
+          img.style.cssText = 'width:100%;aspect-ratio:1;object-fit:cover;display:block;';
+          img.loading = 'lazy';
+          imgDiv.appendChild(img);
+        }
       }
       card.addEventListener('click', () => showDetail(item, buildMain));
       feedSection.appendChild(card);
