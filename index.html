@@ -8,7 +8,79 @@
   <link rel="stylesheet" href="css/apps.css">
 </head>
 <body>
-  <div id="app"></div>
+  <div id="app">
+    <div class="menu-screen">
+      <div class="menu-content">
+        <div class="menu-title">Stalkie</div>
+        <div class="menu-subtitle">¿Es infiel?</div>
+        <div class="lang-btns">
+          <button class="btn-lang active" data-lang="es">Español</button>
+          <button class="btn-lang" data-lang="en">English</button>
+        </div>
+        <button class="btn-play">Play</button>
+      </div>
+    </div>
+
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+
+        <div class="status-bar">
+          <div class="status-bar-left">📶 📡</div>
+          <div class="status-bar-center">
+            <span class="status-time">9:41</span>
+          </div>
+          <div class="status-bar-right">🔋</div>
+        </div>
+
+        <div class="screen">
+          <div class="home-screen">
+            <div class="home-time" id="home-time">9:41</div>
+            <div class="home-date" id="home-date">Wednesday</div>
+
+            <div class="app-grid">
+              <div class="app-icon" data-app="instagram">
+                <div class="icon-img" style="background: linear-gradient(135deg, #E1306C, #F77737);">📷</div>
+                <span>Instagram</span>
+              </div>
+              <div class="app-icon" data-app="whatsapp">
+                <div class="icon-img" style="background: #25D366;">💬</div>
+                <span>WhatsApp</span>
+              </div>
+              <div class="app-icon" data-app="revolut">
+                <div class="icon-img" style="background: #191c82;">💳</div>
+                <span>Revolut</span>
+              </div>
+              <div class="app-icon" data-app="twitter">
+                <div class="icon-img" style="background: #000;">🐦</div>
+                <span>Twitter</span>
+              </div>
+              <div class="app-icon" data-app="maps">
+                <div class="icon-img" style="background: #4285F4;">🗺️</div>
+                <span>Maps</span>
+              </div>
+              <div class="app-icon" data-app="gallery">
+                <div class="icon-img" style="background: #FF9500;">🖼️</div>
+                <span>Galería</span>
+              </div>
+              <div class="app-icon" data-app="messages">
+                <div class="icon-img" style="background: #34C759;">✉️</div>
+                <span>Mensajes</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="phone-bottom-bar">
+          <button class="btn-back">← Atrás</button>
+          <div class="home-indicator"></div>
+          <button class="btn-evidence">🗂️</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="camera-flash"></div>
+  </div>
   <script type="module" src="js/main.js"></script>
 </body>
 </html>
