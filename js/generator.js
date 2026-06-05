@@ -126,27 +126,77 @@ function generateAppContent(rng, lang, pools, ctx) {
   const igItems = [];
   let igIdx = 0;
 
-  // Filler posts
+  // Varied suspect filler posts (pick 2 from a larger pool)
+  const suspectPostPool = lang === 'es' ? [
+    { caption: 'Buenas vibras 🌅', imageEmoji: '🌅', imageColor: '#87CEEB' },
+    { caption: `Con los chicos 🍻`, imageEmoji: '🍻', imageColor: '#4682B4' },
+    { caption: 'Finde perfecto ⚽', imageEmoji: '⚽', imageColor: '#4CAF50' },
+    { caption: 'Tarde de sol ☀️', imageEmoji: '🌅', imageColor: '#FFD700' },
+    { caption: 'Nada como casa 🏠', imageEmoji: '🌳', imageColor: '#90EE90' },
+    { caption: 'Volando alto ✈️', imageEmoji: '🌅', imageColor: '#87CEEB' },
+  ] : [
+    { caption: 'Good vibes only 🌅', imageEmoji: '🌅', imageColor: '#87CEEB' },
+    { caption: 'Lads night 🍻', imageEmoji: '🍻', imageColor: '#4682B4' },
+    { caption: 'Weekend football ⚽', imageEmoji: '⚽', imageColor: '#4CAF50' },
+    { caption: 'Sunny day ☀️', imageEmoji: '🌅', imageColor: '#FFD700' },
+    { caption: 'Nothing like home 🏠', imageEmoji: '🌳', imageColor: '#90EE90' },
+    { caption: 'Up in the air ✈️', imageEmoji: '🌅', imageColor: '#87CEEB' },
+  ];
+  const shuffledPosts = rng.shuffle([...suspectPostPool]);
+  for (let pi = 0; pi < 2; pi++) {
+    const p = shuffledPosts[pi];
+    igItems.push(item(`ig_f${igIdx++}`, null, {
+      subtype: 'feed_post',
+      username: suspect.username,
+      avatarColor: suspect.avatarColor,
+      caption: p.caption,
+      likes: rng.nextInt(15, 320),
+      timeAgo: `${rng.nextInt(1, 7)}d`,
+      imageColor: p.imageColor,
+      imageEmoji: p.imageEmoji,
+    }));
+  }
+
+  // Posts from OTHER accounts in the feed (makes it feel like a real feed)
+  const otherAccounts = lang === 'es' ? [
+    { username: 'futbol_diario', color: '#2E86AB', caption: '¡Qué golazo! ⚽🔥', imageEmoji: '⚽', likes: rng.nextInt(1200, 45000) },
+    { username: 'recetas_fit', color: '#4CAF50', caption: 'Ensalada mediterránea 🥗 Receta en el link 🍋', imageEmoji: '🍕', likes: rng.nextInt(800, 8000) },
+    { username: 'viajes_top', color: '#FF6B9D', caption: 'Cuando viajas sin planear... 🌊🏖️', imageEmoji: '🌊', likes: rng.nextInt(5000, 120000) },
+    { username: 'humor_español', color: '#FFD43B', caption: 'Un lunes más... 😅☕', imageEmoji: '🌅', likes: rng.nextInt(3000, 50000) },
+  ] : [
+    { username: 'dailyfootball', color: '#2E86AB', caption: 'What a goal ⚽🔥', imageEmoji: '⚽', likes: rng.nextInt(1200, 45000) },
+    { username: 'fitrecipes_uk', color: '#4CAF50', caption: 'Mediterranean salad 🥗 Recipe in bio 🍋', imageEmoji: '🍕', likes: rng.nextInt(800, 8000) },
+    { username: 'traveltop', color: '#FF6B9D', caption: 'When you travel without a plan... 🌊🏖️', imageEmoji: '🌊', likes: rng.nextInt(5000, 120000) },
+    { username: 'britishmemes', color: '#FFD43B', caption: 'Monday again... 😅☕', imageEmoji: '🌅', likes: rng.nextInt(3000, 50000) },
+  ];
+  // Pick 2 random other accounts
+  const pickedOthers = rng.shuffle([...otherAccounts]).slice(0, 2);
+  for (const acc of pickedOthers) {
+    igItems.push(item(`ig_f${igIdx++}`, null, {
+      subtype: 'feed_post',
+      username: acc.username,
+      avatarColor: acc.color,
+      caption: acc.caption,
+      likes: acc.likes,
+      timeAgo: `${rng.nextInt(1, 4)}h`,
+      imageColor: '#87CEEB',
+      imageEmoji: acc.imageEmoji,
+    }));
+  }
+
+  // Girlfriend's own post in the feed
   igItems.push(item(`ig_f${igIdx++}`, null, {
     subtype: 'feed_post',
-    username: suspect.username,
-    avatarColor: suspect.avatarColor,
-    caption: lang === 'es' ? 'Buenas vibras 🌅' : 'Good vibes only 🌅',
-    likes: rng.nextInt(12, 300),
-    timeAgo: `${rng.nextInt(1,5)}d`,
-    imageColor: rng.pick(['#87CEEB','#90EE90','#FFB6C1','#DDA0DD','#F0E68C']),
-    imageEmoji: '🌅'
+    username: girlfriend.username,
+    avatarColor: girlfriend.avatarColor,
+    caption: lang === 'es' ? 'Feliz 🌸✨' : 'Happy 🌸✨',
+    likes: rng.nextInt(40, 400),
+    timeAgo: `${rng.nextInt(2, 8)}d`,
+    imageColor: '#FFB6C1',
+    imageEmoji: '🌸',
   }));
-  igItems.push(item(`ig_f${igIdx++}`, null, {
-    subtype: 'feed_post',
-    username: suspect.username,
-    avatarColor: suspect.avatarColor,
-    caption: lang === 'es' ? `Con los chicos 🍻` : `Lads night 🍻`,
-    likes: rng.nextInt(20, 150),
-    timeAgo: `${rng.nextInt(1,7)}d`,
-    imageColor: rng.pick(['#4682B4','#708090','#2F4F4F']),
-    imageEmoji: '🍻'
-  }));
+
+  // DM from girlfriend
   igItems.push(item(`ig_f${igIdx++}`, null, {
     subtype: 'dm_thread',
     username: girlfriend.username,
@@ -304,33 +354,116 @@ function generateAppContent(rng, lang, pools, ctx) {
   const waItems = [];
   let waIdx = 0;
 
-  // Filler threads
+  // Varied WhatsApp filler threads (girlfriend conversation, picked from pool)
+  const gfConvoPool = lang === 'es' ? [
+    {
+      msgs: [
+        {from:'them', text:'¿A qué hora llegas esta noche?', time:'19:02'},
+        {from:'me', text:'Sobre las 8, ¿por?', time:'19:05'},
+        {from:'them', text:'Hago cena 😊', time:'19:06'},
+      ], last:'Hago cena 😊', lastTime:'19:06'
+    },
+    {
+      msgs: [
+        {from:'them', text:'¿Recuerdas que tenemos cena el viernes?', time:'14:10'},
+        {from:'me', text:'Claro, a las 21h ¿no?', time:'14:15'},
+        {from:'them', text:'Sí exacto ❤️', time:'14:16'},
+      ], last:'Sí exacto ❤️', lastTime:'14:16'
+    },
+    {
+      msgs: [
+        {from:'them', text:'¿Compras tú el pan de camino a casa?', time:'17:50'},
+        {from:'me', text:'Sí, lo pillo 😊', time:'17:55'},
+        {from:'them', text:'Eres lo mejor 🥰', time:'17:56'},
+      ], last:'Eres lo mejor 🥰', lastTime:'17:56'
+    },
+    {
+      msgs: [
+        {from:'me', text:'Ya voy saliendo, en 20 min llego', time:'20:05'},
+        {from:'them', text:'Perfecto, tengo la cena lista 🍝', time:'20:06'},
+      ], last:'Perfecto, tengo la cena lista 🍝', lastTime:'20:06'
+    },
+  ] : [
+    {
+      msgs: [
+        {from:'them', text:'What time are you home tonight?', time:'19:02'},
+        {from:'me', text:'Around 8, why?', time:'19:05'},
+        {from:'them', text:"I'll make dinner 😊", time:'19:06'},
+      ], last:"I'll make dinner 😊", lastTime:'19:06'
+    },
+    {
+      msgs: [
+        {from:'them', text:'Do you remember we have dinner Friday?', time:'14:10'},
+        {from:'me', text:'Yeah, 9pm right?', time:'14:15'},
+        {from:'them', text:'Exactly ❤️', time:'14:16'},
+      ], last:'Exactly ❤️', lastTime:'14:16'
+    },
+    {
+      msgs: [
+        {from:'them', text:'Can you grab bread on your way home?', time:'17:50'},
+        {from:'me', text:"Yep, on it 😊", time:'17:55'},
+        {from:'them', text:'You\'re the best 🥰', time:'17:56'},
+      ], last:"You're the best 🥰", lastTime:'17:56'
+    },
+    {
+      msgs: [
+        {from:'me', text:'Leaving now, be there in 20', time:'20:05'},
+        {from:'them', text:'Perfect, dinner\'s ready 🍝', time:'20:06'},
+      ], last:"Perfect, dinner's ready 🍝", lastTime:'20:06'
+    },
+  ];
+  const gfConvo = rng.pick(gfConvoPool);
   waItems.push(item(`wa_f${waIdx++}`, null, {
     subtype: 'thread',
     contactName: girlfriend.name,
     avatarColor: girlfriend.avatarColor,
     isUnknown: false,
-    messages: [
-      { from: 'them', text: lang === 'es' ? '¿A qué hora llegas esta noche?' : 'What time are you home tonight?', time: '19:02' },
-      { from: 'me', text: lang === 'es' ? 'Sobre las 8, ¿por?' : 'Around 8, why?', time: '19:05' },
-      { from: 'them', text: lang === 'es' ? 'Hago cena 😊' : 'I\'ll make dinner 😊', time: '19:06' }
-    ],
-    lastMessage: lang === 'es' ? 'Hago cena 😊' : "I'll make dinner 😊",
-    lastTime: '19:06',
+    messages: gfConvo.msgs,
+    lastMessage: gfConvo.last,
+    lastTime: gfConvo.lastTime,
     unread: 0
   }));
+
+  // Family group
+  const familyConvoPool = lang === 'es' ? [
+    {msgs:[{from:'them',text:'¿Venís el domingo?',time:'10:30'},{from:'me',text:'Sí, allí estaremos',time:'10:45'}], last:'Sí, allí estaremos', lastTime:'10:45'},
+    {msgs:[{from:'them',text:'Mamá: ¿Quedamos el sábado? 🍕',time:'11:00'},{from:'me',text:'Perfecto, yo llevo postre',time:'11:15'}], last:'Yo llevo postre', lastTime:'11:15'},
+    {msgs:[{from:'them',text:'¿Alguien sabe cuándo llega el paquete de papá?',time:'16:20'},{from:'me',text:'Mañana dicen',time:'16:30'}], last:'Mañana dicen', lastTime:'16:30'},
+  ] : [
+    {msgs:[{from:'them',text:'Are you coming Sunday?',time:'10:30'},{from:'me',text:"Yes, we'll be there",time:'10:45'}], last:"Yes, we'll be there", lastTime:'10:45'},
+    {msgs:[{from:'them',text:'Mum: Saturday dinner? 🍕',time:'11:00'},{from:'me',text:"Perfect, I'll bring dessert",time:'11:15'}], last:"I'll bring dessert", lastTime:'11:15'},
+    {msgs:[{from:'them',text:"Does anyone know when Dad's parcel arrives?",time:'16:20'},{from:'me',text:'Tomorrow they said',time:'16:30'}], last:'Tomorrow they said', lastTime:'16:30'},
+  ];
+  const familyConvo = rng.pick(familyConvoPool);
   waItems.push(item(`wa_f${waIdx++}`, null, {
     subtype: 'thread',
     contactName: pools.familyGroupName,
     avatarColor: '#69DB7C',
     isUnknown: false,
     isGroup: true,
-    messages: [
-      { from: 'them', text: lang === 'es' ? '¿Venís el domingo?' : 'Are you coming Sunday?', time: '10:30' },
-      { from: 'me', text: lang === 'es' ? 'Sí, allí estaremos' : 'Yes, we\'ll be there', time: '10:45' }
-    ],
-    lastMessage: lang === 'es' ? 'Sí, allí estaremos' : "Yes, we'll be there",
-    lastTime: '10:45',
+    messages: familyConvo.msgs,
+    lastMessage: familyConvo.last,
+    lastTime: familyConvo.lastTime,
+    unread: 0
+  }));
+
+  // Extra casual friend thread (adds depth to the inbox)
+  const friendName = rng.pick(lang === 'es' ? ['Carlos','Rafa','Toni','Álvaro','Borja'] : ['Jamie','Dave','Mike','Dan','Connor']);
+  const friendConvoPool = lang === 'es' ? [
+    {msgs:[{from:'them',text:`¿Ves el partido esta noche?`,time:'20:00'},{from:'me',text:'Obvio, en el bar de siempre 🍺',time:'20:02'}], last:'Obvio, en el bar de siempre 🍺', lastTime:'20:02'},
+    {msgs:[{from:'them',text:'Colega que gol el de ayer 🔥',time:'09:12'},{from:'me',text:'Épico jaja',time:'09:30'}], last:'Épico jaja', lastTime:'09:30'},
+  ] : [
+    {msgs:[{from:'them',text:'Watching the match tonight?',time:'20:00'},{from:'me',text:'Obviously, usual pub 🍺',time:'20:02'}], last:'Obviously, usual pub 🍺', lastTime:'20:02'},
+    {msgs:[{from:'them',text:'Mate what a goal yesterday 🔥',time:'09:12'},{from:'me',text:'Insane haha',time:'09:30'}], last:'Insane haha', lastTime:'09:30'},
+  ];
+  waItems.push(item(`wa_f${waIdx++}`, null, {
+    subtype: 'thread',
+    contactName: friendName,
+    avatarColor: rng.pick(['#74C0FC','#FFD43B','#63E6BE']),
+    isUnknown: false,
+    messages: rng.pick(friendConvoPool).msgs,
+    lastMessage: rng.pick(friendConvoPool).last,
+    lastTime: rng.pick(['09:30','20:02','18:45']),
     unread: 0
   }));
 
@@ -472,6 +605,43 @@ function generateAppContent(rng, lang, pools, ctx) {
       lastMessage: lang === 'es' ? 'Muy bien gracias' : 'Great thanks',
       lastTime: '11:20',
       unread: 0
+    }));
+  }
+
+  // ALIBI: rv_couple_restaurant — girlfriend confirms the dinner in WhatsApp
+  if (redHerringIds.includes('rv_couple_restaurant')) {
+    const dinnerRestaurant = rng.pick(pools.romanticRestaurants);
+    waItems.push(item(`wa_alibi_dinner`, null, {
+      subtype: 'thread',
+      contactName: girlfriend.name,
+      avatarColor: girlfriend.avatarColor,
+      isUnknown: false,
+      messages: [
+        { from: 'them', text: lang === 'es' ? `Qué noche tan bonita anoche, gracias por llevarme a ${dinnerRestaurant} ❤️` : `Such a lovely night, thanks for taking me to ${dinnerRestaurant} ❤️`, time: '09:44' },
+        { from: 'me', text: lang === 'es' ? '😘 Mereces lo mejor' : '😘 You deserve the best', time: '09:46' },
+      ],
+      lastMessage: lang === 'es' ? '😘 Mereces lo mejor' : '😘 You deserve the best',
+      lastTime: '09:46',
+      unread: 0,
+    }));
+  }
+
+  // ALIBI: rv_parents_gift — family group discusses gifting mom
+  if (redHerringIds.includes('rv_parents_gift')) {
+    waItems.push(item(`wa_alibi_parentsgift`, null, {
+      subtype: 'thread',
+      contactName: pools.familyGroupName,
+      avatarColor: '#69DB7C',
+      isUnknown: false,
+      isGroup: true,
+      messages: [
+        { from: 'them', text: lang === 'es' ? '¿Qué le regalamos a mamá para su cumpleaños?' : "What should we get Mum for her birthday?", time: '10:20' },
+        { from: 'me', text: lang === 'es' ? 'Una joya, yo me encargo 😊' : 'Some jewellery, I\'ll sort it 😊', time: '10:25' },
+        { from: 'them', text: lang === 'es' ? '¡Perfecto! Ella va a alucinar 💎' : 'Perfect! She\'ll love it 💎', time: '10:27' },
+      ],
+      lastMessage: lang === 'es' ? '¡Perfecto! Ella va a alucinar 💎' : "Perfect! She'll love it 💎",
+      lastTime: '10:27',
+      unread: 0,
     }));
   }
 
@@ -993,6 +1163,34 @@ function generateAppContent(rng, lang, pools, ctx) {
     lastMessage: lang === 'es' ? 'Sí, la traigo' : 'Yep, on it',
     lastTime: '13:50'
   }));
+
+  // ALIBI: rv_birthday_flowers — mom's text thanking him for flowers
+  if (redHerringIds.includes('rv_birthday_flowers')) {
+    msgItems.push(item(`msg_alibi_bflowers`, null, {
+      subtype: 'sms_thread',
+      contactName: lang === 'es' ? 'Mamá 🌸' : 'Mum 🌸',
+      isUnknown: false,
+      messages: [
+        { from: 'them', text: lang === 'es' ? '¡Gracias por las flores, hijo! Son preciosas 💐 Os quiero mucho' : 'Thank you so much for the flowers! They\'re beautiful 💐 Love you both', time: '14:32' }
+      ],
+      lastMessage: lang === 'es' ? '¡Gracias por las flores! 💐' : 'Thank you for the flowers! 💐',
+      lastTime: '14:32',
+    }));
+  }
+
+  // ALIBI: rv_biz_trip — company HR confirms travel expenses
+  if (redHerringIds.includes('rv_biz_trip')) {
+    msgItems.push(item(`msg_alibi_biztrip`, null, {
+      subtype: 'sms_thread',
+      contactName: lang === 'es' ? 'RRHH Empresa' : 'Company HR',
+      isUnknown: false,
+      messages: [
+        { from: 'them', text: lang === 'es' ? 'Viaje corporativo aprobado. Gastos de hotel y dietas incluidos. Ref: VJ-2024-112' : 'Business travel approved. Hotel and expenses covered. Ref: BT-2024-112', time: '09:10' }
+      ],
+      lastMessage: lang === 'es' ? 'Gastos aprobados ✓ Ref: VJ-2024' : 'Expenses approved ✓ Ref: BT-2024',
+      lastTime: '09:10',
+    }));
+  }
 
   // Messages-specific evidence (SMS versions of some whatsapp evidence)
   if (realEvidenceIds.includes('wa_miss_you') && !waItems.some(i => i.evidenceId === 'wa_miss_you')) {

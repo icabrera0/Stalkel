@@ -1,3 +1,5 @@
+import { audio } from './audio.js';
+
 export function createPhone(container, scenario, t, onCapture) {
   let currentApp = null;
 
@@ -31,7 +33,7 @@ export function createPhone(container, scenario, t, onCapture) {
     requestAnimationFrame(() => appView.classList.add('active'));
   }
 
-  backBtn.addEventListener('click', showHome);
+  backBtn.addEventListener('click', () => { audio.back(); showHome(); });
 
   return { showHome, openApp };
 }

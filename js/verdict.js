@@ -1,13 +1,4 @@
-/**
- * verdict.js — Phase 1: Verdict Choice, Phase 2: Reveal
- *
- * showVerdict(container, scenario, t, collected, onPlayAgain)
- *   container  : the #app div (full-page element)
- *   scenario   : object from generateScenario()
- *   t          : i18n translate function
- *   collected  : string[] of evidenceIds already filtered (no nulls)
- *   onPlayAgain: callback — caller handles reload
- */
+import { audio } from './audio.js';
 
 export function showVerdict(container, scenario, t, collected, onPlayAgain) {
   // ── Phase 1: Verdict Choice ────────────────────────────────────────────────
@@ -66,14 +57,14 @@ export function showVerdict(container, scenario, t, collected, onPlayAgain) {
     guiltyBtn.className = 'btn-verdict btn-guilty';
     guiltyBtn.textContent = t('verdict.guilty');
     guiltyBtn.style.background = 'linear-gradient(135deg,#FF416C,#FF4B2B)';
-    guiltyBtn.addEventListener('click', () => showReveal('guilty'));
+    guiltyBtn.addEventListener('click', () => { audio.tap(); showReveal('guilty'); });
 
     // Innocent button
     const innocentBtn = document.createElement('button');
     innocentBtn.className = 'btn-verdict btn-innocent';
     innocentBtn.textContent = t('verdict.innocent');
     innocentBtn.style.background = 'linear-gradient(135deg,#56ab2f,#a8e063)';
-    innocentBtn.addEventListener('click', () => showReveal('innocent'));
+    innocentBtn.addEventListener('click', () => { audio.tap(); showReveal('innocent'); });
 
     btns.appendChild(guiltyBtn);
     btns.appendChild(innocentBtn);
@@ -89,6 +80,7 @@ export function showVerdict(container, scenario, t, collected, onPlayAgain) {
     container.innerHTML = '';
 
     const correct = (playerChoice === scenario.outcome);
+    setTimeout(() => correct ? audio.correct() : audio.wrong(), 300);
     const outcome = scenario.outcome;
 
     // Determine header text

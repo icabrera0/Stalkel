@@ -1,3 +1,4 @@
+import { audio } from '../audio.js';
 export function render(container, data, scenario, t, onCapture) {
   if (!data || !data.items) return;
 
@@ -23,6 +24,7 @@ export function render(container, data, scenario, t, onCapture) {
   }
 
   function triggerCapture(item, label, detailHtml) {
+    audio.capture();
     const flash = document.querySelector('.camera-flash');
     if (flash) {
       flash.classList.add('flash');

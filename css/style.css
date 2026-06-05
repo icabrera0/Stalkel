@@ -16,7 +16,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
   margin: 0;
   padding: 0;
 }
@@ -45,61 +45,164 @@ body {
 .phone {
   width: 390px;
   height: 844px;
-  background: #1a1a1a;
-  border-radius: 55px;
-  border: 10px solid #2a2a2a;
+  background: #1c1c1e;
+  border-radius: 54px;
+  border: 11px solid #2a2a2c;
   box-shadow:
-    0 0 0 2px #444,
-    0 40px 80px rgba(0, 0, 0, 0.8),
-    inset 0 0 0 2px #111;
+    0 0 0 1px rgba(255, 255, 255, 0.18),
+    0 0 0 2px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 60px 120px rgba(0, 0, 0, 0.9),
+    0 30px 60px rgba(0, 0, 0, 0.5);
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
-.phone-notch {
+/* =====================================================
+   DYNAMIC ISLAND
+   ===================================================== */
+.dynamic-island {
   position: absolute;
-  top: 0;
+  top: 11px;
   left: 50%;
   transform: translateX(-50%);
-  width: 120px;
-  height: 30px;
-  background: #1a1a1a;
-  border-radius: 0 0 20px 20px;
+  width: 126px;
+  height: 36px;
+  background: #000;
+  border-radius: 20px;
   z-index: 100;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
+
+/* =====================================================
+   SIDE HARDWARE BUTTONS
+   ===================================================== */
+.phone-sides-left {
+  position: absolute;
+  left: -14px;
+  top: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-top: 118px;
+  gap: 14px;
+  z-index: 1;
+}
+
+.phone-sides-right {
+  position: absolute;
+  right: -14px;
+  top: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-top: 190px;
+  z-index: 1;
+}
+
+.side-btn {
+  width: 4px;
+  background: linear-gradient(180deg, #3a3a3c, #2a2a2c);
+  border-radius: 2px 0 0 2px;
+  box-shadow: -1px 0 3px rgba(0, 0, 0, 0.5), inset 1px 0 0 rgba(255,255,255,0.08);
+}
+
+.phone-sides-right .side-btn {
+  border-radius: 0 2px 2px 0;
+  box-shadow: 1px 0 3px rgba(0, 0, 0, 0.5), inset -1px 0 0 rgba(255,255,255,0.08);
+}
+
+.silent-switch { height: 22px; }
+.vol-up        { height: 40px; }
+.vol-down      { height: 40px; }
+.power-btn     { height: 68px; }
 
 /* =====================================================
    STATUS BAR
    ===================================================== */
 .status-bar {
-  height: 44px;
+  height: 54px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 28px 8px;
   color: white;
-  font-size: 12px;
-  font-weight: 600;
   flex-shrink: 0;
+  z-index: 10;
 }
 
 .status-bar-left {
   display: flex;
-  gap: 4px;
   align-items: center;
+}
+
+.status-time {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
 }
 
 .status-bar-right {
   display: flex;
-  gap: 4px;
   align-items: center;
+  gap: 6px;
 }
 
-.status-bar-center {
-  flex: 1;
-  text-align: center;
+/* Signal bars */
+.signal-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+}
+
+.signal-bars span {
+  width: 3px;
+  background: white;
+  border-radius: 1px;
+}
+
+.signal-bars span:nth-child(1) { height: 3px; }
+.signal-bars span:nth-child(2) { height: 5px; }
+.signal-bars span:nth-child(3) { height: 8px; }
+.signal-bars span:nth-child(4) { height: 11px; }
+
+/* WiFi icon */
+.wifi-icon {
+  width: 16px;
+  height: 12px;
+}
+
+/* Battery icon */
+.battery-icon {
+  position: relative;
+  width: 24px;
+  height: 12px;
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  border-radius: 3px;
+}
+
+.battery-icon .battery-fill {
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  bottom: 2px;
+  width: 68%;
+  background: white;
+  border-radius: 1px;
+}
+
+.battery-icon .battery-cap {
+  position: absolute;
+  right: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 0 2px 2px 0;
 }
 
 /* =====================================================
@@ -134,7 +237,6 @@ body {
   transform: translateX(100%);
 }
 
-/* App header is common base, overridden per-app */
 .app-header {
   padding: 12px 16px;
   font-weight: 600;
@@ -167,17 +269,19 @@ body {
 .home-time {
   text-align: center;
   color: white;
-  font-size: 32px;
-  font-weight: 200;
-  margin-top: 40px;
-  margin-bottom: 10px;
+  font-size: 64px;
+  font-weight: 300;
+  margin-top: 48px;
+  margin-bottom: 6px;
+  letter-spacing: -2px;
 }
 
 .home-date {
   text-align: center;
   color: rgba(255, 255, 255, 0.7);
-  font-size: 12px;
-  margin-bottom: 60px;
+  font-size: 16px;
+  margin-bottom: 48px;
+  font-weight: 400;
 }
 
 /* =====================================================
@@ -186,8 +290,8 @@ body {
 .app-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  margin-top: 40px;
+  gap: 18px;
+  margin-top: 24px;
 }
 
 .app-icon {
@@ -201,19 +305,32 @@ body {
 }
 
 .app-icon .icon-img {
-  width: 60px;
-  height: 60px;
-  border-radius: 16px;
+  width: 58px;
+  height: 58px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  transition: transform 0.1s;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
 }
 
-.app-icon .icon-img:active {
-  transform: scale(0.95);
+.app-icon .icon-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+}
+
+.app-icon:active .icon-img {
+  transform: scale(0.91);
 }
 
 .app-icon span {
@@ -221,70 +338,92 @@ body {
   font-size: 10px;
   text-align: center;
   line-height: 1.2;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 /* =====================================================
-   PHONE BOTTOM BAR (HOME INDICATOR + BUTTONS)
+   PHONE BOTTOM BAR
    ===================================================== */
 .phone-bottom-bar {
-  height: 44px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
+  padding: 0 20px;
   flex-shrink: 0;
-  background: #1a1a1a;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .home-indicator {
-  width: 120px;
+  width: 130px;
   height: 4px;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 2px;
-  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 3px;
 }
 
 .btn-back {
-  color: white;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 8px;
+  width: 36px;
+  height: 36px;
   display: none;
+  align-items: center;
+  justify-content: center;
   background: none;
   border: none;
+  cursor: pointer;
+  padding: 0;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-}
-
-.btn-back.visible {
-  display: block;
+  border-radius: 50%;
+  transition: background 0.15s;
 }
 
 .btn-back:active {
-  opacity: 0.6;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-back.visible {
+  display: flex;
 }
 
 .btn-evidence {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   background: linear-gradient(135deg, #FF6B9D, #C77DFF);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(255, 107, 157, 0.4);
+  box-shadow: 0 3px 10px rgba(255, 107, 157, 0.5);
   border: none;
   color: white;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-  transition: transform 0.1s;
+  transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
 }
 
 .btn-evidence:active {
-  transform: scale(0.95);
+  transform: scale(0.92);
+}
+
+.evidence-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 16px;
+  height: 16px;
+  background: #FF3B30;
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 700;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #1c1c1e;
 }
 
 /* =====================================================
@@ -293,7 +432,7 @@ body {
 .menu-screen {
   position: fixed;
   inset: 0;
-  background: linear-gradient(135deg, #FF6B9D, #C77DFF, #845EF7);
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -306,68 +445,6 @@ body {
   text-align: center;
 }
 
-.menu-title {
-  font-size: 48px;
-  font-weight: 800;
-  color: white;
-  margin-bottom: 12px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.menu-subtitle {
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 40px;
-  font-weight: 300;
-}
-
-.lang-btns {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  margin-bottom: 30px;
-}
-
-.btn-lang {
-  padding: 10px 24px;
-  border-radius: 20px;
-  border: 2px solid white;
-  background: transparent;
-  color: white;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: all 0.2s;
-}
-
-.btn-lang.active {
-  background: white;
-  color: #C77DFF;
-}
-
-.btn-lang:active {
-  transform: scale(0.98);
-}
-
-.btn-play {
-  padding: 16px 48px;
-  background: white;
-  color: #C77DFF;
-  border: none;
-  border-radius: 28px;
-  font-weight: 700;
-  font-size: 16px;
-  cursor: pointer;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-  -webkit-tap-highlight-color: transparent;
-  transition: transform 0.1s;
-}
-
-.btn-play:active {
-  transform: scale(0.98);
-}
-
 /* =====================================================
    CAMERA FLASH
    ===================================================== */
@@ -378,11 +455,11 @@ body {
   opacity: 0;
   pointer-events: none;
   z-index: 9999;
-  transition: opacity 0.1s;
+  transition: opacity 0.08s;
 }
 
 .camera-flash.flash {
-  opacity: 0.8;
+  opacity: 1;
 }
 
 /* =====================================================
@@ -391,22 +468,13 @@ body {
 .evidence-overlay {
   position: absolute;
   inset: 0;
-  background: #8B6914;
+  background: #6b4c0e;
   background-image:
-    repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px),
-    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    url("data:image/svg+xml,%3Csvg width='4' height='4' viewBox='0 0 4 4' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 3h1v1H1V3zm2-2h1v1H3V1z' fill='%23000' fill-opacity='0.04'/%3E%3C/svg%3E");
   z-index: 50;
   overflow-y: auto;
   padding: 16px;
-  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
-}
-
-.evidence-title {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 12px;
-  text-align: center;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.4);
 }
 
 .polaroid-grid {
@@ -419,16 +487,18 @@ body {
 .polaroid {
   background: white;
   padding: 8px 8px 28px 8px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    0 1px 3px rgba(0, 0, 0, 0.3);
   transform: rotate(var(--rot, 0deg));
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-  transition: transform 0.1s;
+  transition: transform 0.15s;
 }
 
 .polaroid:active {
-  transform: rotate(var(--rot, 0deg)) scale(0.98);
+  transform: rotate(var(--rot, 0deg)) scale(0.96);
 }
 
 .polaroid img,
@@ -441,9 +511,9 @@ body {
 }
 
 .polaroid-label {
-  font-size: 10px;
+  font-size: 9px;
   text-align: center;
-  margin-top: 4px;
+  margin-top: 6px;
   color: #333;
   font-family: 'Courier New', monospace;
   line-height: 1.2;
@@ -489,10 +559,10 @@ body {
 
 .btn-verdict {
   padding: 16px 32px;
-  border-radius: 12px;
+  border-radius: 14px;
   border: none;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 15px;
   cursor: pointer;
   color: white;
   -webkit-tap-highlight-color: transparent;
@@ -500,17 +570,17 @@ body {
 }
 
 .btn-verdict:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
 .btn-guilty {
   background: linear-gradient(135deg, #FF4757, #FF6348);
-  box-shadow: 0 4px 12px rgba(255, 71, 87, 0.4);
+  box-shadow: 0 4px 14px rgba(255, 71, 87, 0.4);
 }
 
 .btn-innocent {
   background: linear-gradient(135deg, #2ED573, #26DE81);
-  box-shadow: 0 4px 12px rgba(46, 213, 115, 0.4);
+  box-shadow: 0 4px 14px rgba(46, 213, 115, 0.4);
 }
 
 /* =====================================================
@@ -542,13 +612,8 @@ body {
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.reveal-verdict.guilty {
-  color: #FF6B9D;
-}
-
-.reveal-verdict.innocent {
-  color: #69DB7C;
-}
+.reveal-verdict.guilty  { color: #FF6B9D; }
+.reveal-verdict.innocent { color: #69DB7C; }
 
 .reveal-story {
   font-size: 14px;
@@ -558,13 +623,13 @@ body {
 }
 
 .reveal-section-title {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-top: 20px;
   margin-bottom: 12px;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .missed-evidence-grid {
@@ -575,56 +640,55 @@ body {
 }
 
 .missed-evidence-item {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
   padding: 8px;
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.75);
   text-align: center;
 }
 
 .btn-play-again {
-  padding: 12px 32px;
+  padding: 13px 32px;
   background: linear-gradient(135deg, #FF6B9D, #C77DFF);
   border: none;
-  border-radius: 20px;
+  border-radius: 22px;
   color: white;
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(255, 107, 157, 0.4);
+  box-shadow: 0 4px 14px rgba(255, 107, 157, 0.4);
   margin-top: 20px;
   -webkit-tap-highlight-color: transparent;
   transition: transform 0.1s;
 }
 
 .btn-play-again:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
 /* =====================================================
    SCROLLBAR STYLING
    ===================================================== */
-.app-view::-webkit-scrollbar {
-  width: 6px;
+.app-view::-webkit-scrollbar,
+.app-content::-webkit-scrollbar {
+  width: 3px;
 }
 
-.app-view::-webkit-scrollbar-track {
-  background: #f1f1f1;
+.app-view::-webkit-scrollbar-track,
+.app-content::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.app-view::-webkit-scrollbar-thumb {
-  background: #ccc;
+.app-view::-webkit-scrollbar-thumb,
+.app-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
   border-radius: 3px;
 }
 
-.app-view::-webkit-scrollbar-thumb:hover {
-  background: #999;
-}
-
 /* =====================================================
-   RESPONSIVE ADJUSTMENTS
+   RESPONSIVE: MOBILE (fills screen, no side buttons)
    ===================================================== */
 @media (max-width: 420px) {
   .phone {
@@ -635,15 +699,25 @@ body {
     box-shadow: none;
   }
 
-  .phone-notch {
+  .dynamic-island {
+    top: 10px;
+  }
+
+  .phone-sides-left,
+  .phone-sides-right {
     display: none;
   }
+}
 
-  .menu-screen {
-    padding: 16px;
+@media (max-height: 900px) {
+  .phone {
+    transform: scale(0.88);
+    transform-origin: center center;
   }
 
-  .menu-title {
-    font-size: 36px;
+  .phone-sides-left,
+  .phone-sides-right {
+    transform: scale(0.88);
+    transform-origin: center center;
   }
 }

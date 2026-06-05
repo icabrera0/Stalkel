@@ -1,3 +1,13 @@
+import { createPixelArt } from '../pixelart.js';
+import { audio } from '../audio.js';
+
+const IG_PHOTO_TYPES = {
+  '🌅': 'landscape', '🍻': 'food', '🤳': 'selfie', '👙': 'beach',
+  '🌊': 'beach', '🍷': 'food', '📸': 'person', '🌴': 'landscape',
+};
+
+let _igSeedBase = 5000;
+
 export function render(container, data, scenario, t, onCapture) {
   if (!data || !data.items) return;
 
@@ -19,6 +29,7 @@ export function render(container, data, scenario, t, onCapture) {
   }
 
   function triggerCapture(item, label, detailHtml) {
+    audio.capture();
     const flash = document.querySelector('.camera-flash');
     if (flash) {
       flash.classList.add('flash');
@@ -64,6 +75,12 @@ export function render(container, data, scenario, t, onCapture) {
     }
 
     content.innerHTML = bodyHtml;
+    // Render pixel art into any feed image placeholders
+    content.querySelectorAll('.ig-feed-image').forEach(el => {
+      const canvas = createPixelArt(el.dataset.type || 'landscape', parseInt(el.dataset.seed) || _igSeedBase++, 280);
+      canvas.style.cssText = 'width:100%;height:100%;image-rendering:pixelated;display:block;';
+      el.appendChild(canvas);
+    });
     detail.appendChild(content);
 
     // Capture button
@@ -119,9 +136,7 @@ export function render(container, data, scenario, t, onCapture) {
         </div>
         <span style="font-size:18px;color:#000;">⋯</span>
       </div>
-      <div style="width:100%;aspect-ratio:1;background:${item.imageColor || '#f0f0f0'};display:flex;align-items:center;justify-content:center;font-size:64px;">
-        ${item.imageEmoji || '📷'}
-      </div>
+      <div class="ig-feed-image" data-type="${IG_PHOTO_TYPES[item.imageEmoji] || 'landscape'}" data-seed="${_igSeedBase++}" style="width:100%;aspect-ratio:1;overflow:hidden;image-rendering:pixelated;"></div>
       <div class="ig-item-actions">
         <span class="ig-item-action">🤍</span>
         <span class="ig-item-action">💬</span>

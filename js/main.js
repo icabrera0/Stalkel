@@ -3,6 +3,7 @@ import { createI18n } from './i18n.js';
 import { createPhone } from './phone.js';
 import { createEvidenceBoard } from './evidence.js';
 import { showVerdict } from './verdict.js';
+import { audio } from './audio.js';
 import * as Instagram from './apps/instagram.js';
 import * as WhatsApp from './apps/whatsapp.js';
 import * as Revolut from './apps/revolut.js';
@@ -126,7 +127,7 @@ function showMenu(appEl, lang) {
     playBtn.style.transform = 'scale(1)';
     playBtn.style.boxShadow = '0 8px 24px rgba(255,107,157,0.4)';
   });
-  playBtn.addEventListener('click', () => startIntro(lang, appEl));
+  playBtn.addEventListener('click', () => { audio.tap(); startIntro(lang, appEl); });
 }
 
 // ── Intro ─────────────────────────────────────────────────────────────────────
@@ -414,10 +415,14 @@ function startGame(scenario, t, appEl) {
     icon.addEventListener('click', () => {
       const dataApp = icon.dataset.app;
       if (APPS[dataApp]) {
+        audio.appOpen();
         phone.openApp(dataApp, APPS[dataApp]);
       }
     });
   });
+
+  // Evidence button sound
+  btnEvidence.addEventListener('click', () => audio.boardOpen(), { capture: true });
 }
 
 // ── Bootstrap ─────────────────────────────────────────────────────────────────
