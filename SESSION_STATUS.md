@@ -66,6 +66,6 @@ Visual companion is running. User accepted browser-based mockups.
 - ✅ Task 15: Verdict + reveal (4 outcome cases, story, missed evidence)
 - ✅ Task 16: Main entry (menu, intro animation, full game wire-up)
 - ✅ Task 17: GitHub Actions deploy to GitHub Pages
-- ⬜ Task 18: E2E test (pending — needs browser verification)
+- ✅ Task 18: E2E test PASSED — all 7 apps, capture, evidence board, full verdict flow, 0 JS errors
 
-## IMPLEMENTATION COMPLETE — Pending E2E Test (Task 18)
+## STATUS: COMPLETE ✅ — All 18 Tasks Done
