@@ -1,26 +1,5 @@
-import { createPixelArt } from '../pixelart.js';
 import { audio } from '../audio.js';
-
-// Map generator photo types to pixel art types
-const PHOTO_TYPE_MAP = {
-  '🌅': 'landscape', '⚽': 'person', '🌳': 'landscape', '🍕': 'food',
-  '🤳': 'selfie', '🛏️': 'hotel', '💍': 'gift', '💬': 'generic',
-  '📸': 'person', '🏖️': 'beach', '🏢': 'generic', '🎁': 'gift',
-  '👫': 'selfie', '💐': 'gift',
-};
-
-function getPixelType(emoji, caption) {
-  if (PHOTO_TYPE_MAP[emoji]) return PHOTO_TYPE_MAP[emoji];
-  const c = (caption || '').toLowerCase();
-  if (c.includes('hotel') || c.includes('cama')) return 'hotel';
-  if (c.includes('regalo') || c.includes('gift')) return 'gift';
-  if (c.includes('comida') || c.includes('cena') || c.includes('food')) return 'food';
-  if (c.includes('playa') || c.includes('beach')) return 'beach';
-  if (c.includes('noche') || c.includes('night')) return 'night';
-  return 'landscape';
-}
-
-let _photoSeedCounter = 1000;
+import { photoUrl } from '../photos.js';
 
 export function render(container, data, scenario, t, onCapture) {
   if (!data || !data.items) return;
@@ -71,14 +50,13 @@ export function render(container, data, scenario, t, onCapture) {
     const content = document.createElement('div');
     content.style.cssText = 'flex:1;overflow-y:auto;background:#fff;display:flex;flex-direction:column;align-items:center;padding:20px 16px;';
 
-    // Pixel art photo
+    // Real photo
     const photoPlaceholder = document.createElement('div');
-    photoPlaceholder.style.cssText = 'width:100%;aspect-ratio:1;border-radius:8px;overflow:hidden;margin-bottom:16px;image-rendering:pixelated;';
-    const ptype = getPixelType(item.imageEmoji, item.caption);
-    const pseed = _photoSeedCounter++ + (item.id ? item.id.charCodeAt(0) * 31 : 0);
-    const canvas = createPixelArt(ptype, pseed, 256);
-    canvas.style.cssText = 'width:100%;height:100%;image-rendering:pixelated;display:block;';
-    photoPlaceholder.appendChild(canvas);
+    photoPlaceholder.style.cssText = 'width:100%;aspect-ratio:1;border-radius:8px;overflow:hidden;margin-bottom:16px;background:#f0f0f0;';
+    const img = document.createElement('img');
+    img.src = photoUrl(item.id || 'gal_detail');
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+    photoPlaceholder.appendChild(img);
     content.appendChild(photoPlaceholder);
 
     // Date caption
@@ -173,12 +151,12 @@ export function render(container, data, scenario, t, onCapture) {
         albumItems.forEach(item => {
           const cell = document.createElement('div');
           cell.className = 'gal-photo-item';
-          cell.style.cssText = 'overflow:hidden;position:relative;cursor:pointer;';
-          const ptype = getPixelType(item.imageEmoji, item.caption);
-          const pseed = _photoSeedCounter++ + (item.id ? item.id.charCodeAt(0) * 31 : 0);
-          const thumbCanvas = createPixelArt(ptype, pseed, 96);
-          thumbCanvas.style.cssText = 'width:100%;height:100%;image-rendering:pixelated;display:block;';
-          cell.appendChild(thumbCanvas);
+          cell.style.cssText = 'overflow:hidden;position:relative;cursor:pointer;background:#f0f0f0;';
+          const thumbImg = document.createElement('img');
+          thumbImg.src = photoUrl(item.id || 'gal_thumb', 120);
+          thumbImg.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+          thumbImg.loading = 'lazy';
+          cell.appendChild(thumbImg);
           cell.addEventListener('click', () => showDetail(item, buildMain));
           grid.appendChild(cell);
         });

@@ -80,6 +80,13 @@ const EVIDENCE_POOL = {
     { id: 'wa_miss_you', type: 'real' },   // SMS version
     { id: 'wa_location_shared', type: 'real' }, // SMS version
   ],
+  calendar: [
+    { id: 'cal_fake_alibi', type: 'real' },
+  ],
+  notes: [
+    { id: 'notes_suspicious', type: 'real' },
+    { id: 'notes_locked', type: 'real' },
+  ],
 };
 
 // Deduplicated flat pool for cross-app evidence selection
@@ -121,6 +128,16 @@ function generateAppContent(rng, lang, pools, ctx) {
   function item(id, evidenceId, extra) {
     return { id, evidenceId, ...extra };
   }
+
+  // Key date — the single day all suspicious events cluster on for cross-referencing
+  const keyDay = rng.nextInt(8, 22);
+  const _mi = new Date().getMonth();
+  const _abbrEs = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'][_mi];
+  const _abbrEn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][_mi];
+  const keyDateStr = `${keyDay} ${lang === 'es' ? _abbrEs : _abbrEn}`;
+  const _fullEs = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][_mi];
+  const _fullEn = ['January','February','March','April','May','June','July','August','September','October','November','December'][_mi];
+  const keyDateLabel = lang === 'es' ? `el ${keyDay} de ${_fullEs}` : `${_fullEn} ${keyDay}`;
 
   // ── INSTAGRAM ──────────────────────────────────────────────────────────────
   const igItems = [];
@@ -669,7 +686,7 @@ function generateAppContent(rng, lang, pools, ctx) {
       subtype: 'transaction',
       merchant: hotelName,
       amount: `-${rng.nextInt(95,180)},00 ${currency.symbol}`,
-      date: `${rng.nextInt(1,28)} ${rng.pick(lang==='es'?['ene','feb','mar']:['Jan','Feb','Mar'])}`,
+      date: keyDateStr,
       category: lang === 'es' ? '🏨 Hotel' : '🏨 Hotel',
       note: lang === 'es' ? `1 noche • ${suspect.city}` : `1 night • ${suspect.city}`
     }));
@@ -679,7 +696,7 @@ function generateAppContent(rng, lang, pools, ctx) {
       subtype: 'transaction',
       merchant: secretRestaurant,
       amount: `-${rng.nextInt(70,140)},00 ${currency.symbol}`,
-      date: `${rng.nextInt(1,28)} ${rng.pick(lang==='es'?['ene','feb','mar']:['Jan','Feb','Mar'])}`,
+      date: keyDateStr,
       category: lang === 'es' ? '🍽️ Restaurantes' : '🍽️ Restaurants',
       note: lang === 'es' ? 'Mesa para 2' : 'Table for 2'
     }));
@@ -971,7 +988,7 @@ function generateAppContent(rng, lang, pools, ctx) {
   if (realEvidenceIds.includes('gm_alibi_route')) {
     mapsItems.push(item(`gm_ev_alibi`, 'gm_alibi_route', {
       subtype: 'timeline_entry',
-      date: lang === 'es' ? 'Viernes pasado' : 'Last Friday',
+      date: keyDateLabel,
       places: [
         { name: lang === 'es' ? 'Casa' : 'Home', timeRange: '8:00 – 9:00' },
         { name: secretRestaurant, timeRange: '14:00 – 16:30' },
@@ -1208,6 +1225,97 @@ function generateAppContent(rng, lang, pools, ctx) {
 
   const balance = `${rng.nextInt(500,3000)},${rng.nextInt(10,99)} ${currency.symbol}`;
 
+  // ── CALENDAR ──────────────────────────────────────────────────────────────
+  const now = new Date();
+  const calYear = now.getFullYear();
+  const calMonthIdx = now.getMonth();
+  const calMonthNamesEs = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const calMonthNamesEn = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const calMonthName = (lang === 'es' ? calMonthNamesEs : calMonthNamesEn)[calMonthIdx];
+
+  const calEvents = [];
+  calEvents.push({
+    day: rng.nextInt(1, 7),
+    title: lang === 'es' ? 'Gimnasio' : 'Gym',
+    time: '07:00 – 08:30',
+    location: gymName,
+    color: '#FF9500',
+    evidenceId: null
+  });
+  calEvents.push({
+    day: rng.nextInt(8, 15),
+    title: lang === 'es' ? 'Reunión de equipo' : 'Team meeting',
+    time: '10:00 – 11:30',
+    color: '#007AFF',
+    evidenceId: null
+  });
+  calEvents.push({
+    day: rng.nextInt(18, 25),
+    title: lang === 'es' ? `Cena con ${girlfriend.name}` : `Dinner with ${girlfriend.name}`,
+    time: '21:00',
+    location: rng.pick(pools.romanticRestaurants),
+    color: '#FF2D55',
+    evidenceId: null
+  });
+  if (realEvidenceIds.includes('cal_fake_alibi')) {
+    calEvents.push({
+      day: keyDay,
+      title: lang === 'es' ? 'Viaje de trabajo' : 'Work trip',
+      time: lang === 'es' ? '14:00 – 23:00' : '2:00pm – 11:00pm',
+      location: lang === 'es' ? 'Viaje corporativo' : 'Corporate travel',
+      notes: lang === 'es'
+        ? `Reunión con cliente. Maps lo sitúa en ${secretAddress}.`
+        : `Client meeting. Maps places him at ${secretAddress}.`,
+      color: '#007AFF',
+      evidenceId: 'cal_fake_alibi'
+    });
+  }
+
+  // ── NOTES ──────────────────────────────────────────────────────────────────
+  const notesItems = [];
+  notesItems.push({
+    title: lang === 'es' ? 'Lista de la compra' : 'Shopping list',
+    body: lang === 'es' ? 'Leche\nPan\nYogur\nCerveza\nDetergente' : 'Milk\nBread\nYoghurt\nBeer\nDetergent',
+    date: lang === 'es' ? 'hoy' : 'today',
+    preview: lang === 'es' ? 'Leche, Pan, Yogur...' : 'Milk, Bread, Yoghurt...',
+    isPinned: false,
+    isLocked: false,
+    evidenceId: null
+  });
+  notesItems.push({
+    title: lang === 'es' ? 'Películas pendientes' : 'Movies to watch',
+    body: lang === 'es' ? 'Oppenheimer\nPoor Things\nInterstellar\nEl Padrino' : 'Oppenheimer\nPoor Things\nInterstellar\nThe Godfather',
+    date: lang === 'es' ? 'hace 3 días' : '3 days ago',
+    preview: lang === 'es' ? 'Oppenheimer, Poor Things...' : 'Oppenheimer, Poor Things...',
+    isPinned: false,
+    isLocked: false,
+    evidenceId: null
+  });
+  if (realEvidenceIds.includes('notes_suspicious')) {
+    notesItems.unshift({
+      title: lang === 'es' ? 'Pendientes' : 'To do',
+      body: lang === 'es'
+        ? `Reservar ${secretRestaurant} — mesa para 2\nComprar algo para ${secretContact.name}\nCancelar plan con ${girlfriend.name} ese día\nBorrar conversaciones`
+        : `Book ${secretRestaurant} — table for 2\nGet something for ${secretContact.name}\nCancel plans with ${girlfriend.name} that day\nDelete conversations`,
+      date: lang === 'es' ? 'hace 5 días' : '5 days ago',
+      preview: lang === 'es' ? `Reservar ${secretRestaurant}...` : `Book ${secretRestaurant}...`,
+      isPinned: false,
+      isLocked: false,
+      evidenceId: 'notes_suspicious'
+    });
+  }
+  if (realEvidenceIds.includes('notes_locked')) {
+    notesItems.unshift({
+      title: lang === 'es' ? 'Nota privada' : 'Private note',
+      body: '',
+      date: lang === 'es' ? 'hace 2 días' : '2 days ago',
+      preview: lang === 'es' ? 'Bloqueada con Face ID' : 'Locked with Face ID',
+      isPinned: true,
+      isLocked: true,
+      evidenceId: 'notes_locked'
+    });
+  }
+
   return {
     instagram: { items: igItems },
     whatsapp: { items: waItems },
@@ -1215,7 +1323,9 @@ function generateAppContent(rng, lang, pools, ctx) {
     twitter: { items: twItems },
     maps: { items: mapsItems },
     gallery: { items: galItems },
-    messages: { items: msgItems }
+    messages: { items: msgItems },
+    calendar: { monthName: calMonthName, monthIdx: calMonthIdx, year: calYear, events: calEvents },
+    notes: { items: notesItems }
   };
 }
 

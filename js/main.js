@@ -11,6 +11,8 @@ import * as Twitter from './apps/twitter.js';
 import * as Maps from './apps/maps.js';
 import * as Gallery from './apps/gallery.js';
 import * as Messages from './apps/messages.js';
+import * as Calendar from './apps/calendar.js';
+import * as Notes from './apps/notes.js';
 
 const APPS = {
   instagram: Instagram,
@@ -20,6 +22,8 @@ const APPS = {
   maps: Maps,
   gallery: Gallery,
   messages: Messages,
+  calendar: Calendar,
+  notes: Notes,
 };
 
 const appEl = document.getElementById('app');
@@ -410,8 +414,13 @@ function startGame(scenario, t, appEl) {
   const onCapture = (id, label, appName, html) => board.add(id, label, appName, html);
   const phone = createPhone(appEl, scenario, t, onCapture);
 
-  // App icon clicks
+  // App icon clicks — also update labels to match current language
   appEl.querySelectorAll('.app-icon[data-app]').forEach(icon => {
+    const label = t('app.' + icon.dataset.app);
+    if (!label.startsWith('[missing:')) {
+      const span = icon.querySelector(':scope > span');
+      if (span) span.textContent = label;
+    }
     icon.addEventListener('click', () => {
       const dataApp = icon.dataset.app;
       if (APPS[dataApp]) {

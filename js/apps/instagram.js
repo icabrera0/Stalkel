@@ -1,12 +1,5 @@
-import { createPixelArt } from '../pixelart.js';
 import { audio } from '../audio.js';
-
-const IG_PHOTO_TYPES = {
-  '🌅': 'landscape', '🍻': 'food', '🤳': 'selfie', '👙': 'beach',
-  '🌊': 'beach', '🍷': 'food', '📸': 'person', '🌴': 'landscape',
-};
-
-let _igSeedBase = 5000;
+import { photoUrl } from '../photos.js';
 
 export function render(container, data, scenario, t, onCapture) {
   if (!data || !data.items) return;
@@ -75,11 +68,13 @@ export function render(container, data, scenario, t, onCapture) {
     }
 
     content.innerHTML = bodyHtml;
-    // Render pixel art into any feed image placeholders
+    // Replace feed image placeholders with real photos
     content.querySelectorAll('.ig-feed-image').forEach(el => {
-      const canvas = createPixelArt(el.dataset.type || 'landscape', parseInt(el.dataset.seed) || _igSeedBase++, 280);
-      canvas.style.cssText = 'width:100%;height:100%;image-rendering:pixelated;display:block;';
-      el.appendChild(canvas);
+      const img = document.createElement('img');
+      img.src = photoUrl(el.dataset.seed || 'ig_fallback');
+      img.style.cssText = 'width:100%;aspect-ratio:1;object-fit:cover;display:block;';
+      img.loading = 'lazy';
+      el.appendChild(img);
     });
     detail.appendChild(content);
 
@@ -136,7 +131,7 @@ export function render(container, data, scenario, t, onCapture) {
         </div>
         <span style="font-size:18px;color:#000;">⋯</span>
       </div>
-      <div class="ig-feed-image" data-type="${IG_PHOTO_TYPES[item.imageEmoji] || 'landscape'}" data-seed="${_igSeedBase++}" style="width:100%;aspect-ratio:1;overflow:hidden;image-rendering:pixelated;"></div>
+      <div class="ig-feed-image" data-seed="${item.id || 'ig'}" style="width:100%;aspect-ratio:1;overflow:hidden;"></div>
       <div class="ig-item-actions">
         <span class="ig-item-action">🤍</span>
         <span class="ig-item-action">💬</span>
@@ -293,9 +288,7 @@ export function render(container, data, scenario, t, onCapture) {
           </div>
           <span style="font-size:18px;color:#000;cursor:pointer;">⋯</span>
         </div>
-        <div class="ig-item-image" style="background:${item.imageColor || '#f0f0f0'};display:flex;align-items:center;justify-content:center;font-size:64px;">
-          ${item.imageEmoji || '📷'}
-        </div>
+        <div class="ig-item-image" data-id="${item.id}" style="width:100%;aspect-ratio:1;overflow:hidden;background:#f0f0f0;"></div>
         <div class="ig-item-actions">
           <span class="ig-item-action">🤍</span>
           <span class="ig-item-action">💬</span>
@@ -306,6 +299,15 @@ export function render(container, data, scenario, t, onCapture) {
         ${commentHtml}
         <div class="ig-item-timestamp">${item.timeAgo || ''}</div>`;
       card.style.cursor = 'pointer';
+      // Replace image placeholder with real photo
+      const imgDiv = card.querySelector('.ig-item-image');
+      if (imgDiv) {
+        const img = document.createElement('img');
+        img.src = photoUrl(item.id || 'ig_filler');
+        img.style.cssText = 'width:100%;aspect-ratio:1;object-fit:cover;display:block;';
+        img.loading = 'lazy';
+        imgDiv.appendChild(img);
+      }
       card.addEventListener('click', () => showDetail(item, buildMain));
       feedSection.appendChild(card);
     });

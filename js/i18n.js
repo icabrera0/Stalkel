@@ -25,6 +25,8 @@ export const STRINGS = {
     'app.maps': 'Maps',
     'app.gallery': 'Galería',
     'app.messages': 'Mensajes',
+    'app.calendar': 'Calendario',
+    'app.notes': 'Notas',
     // Evidence board
     'evidence.title': 'Pruebas',
     'evidence.empty': 'Aún no has capturado nada.\nExplora las apps.',
@@ -128,6 +130,9 @@ export const STRINGS = {
     'ev.gal_surprise_photo': 'Foto de decoraciones/regalo',
     'ev.gal_old_photo': 'Foto con chica (álbum antiguo)',
     'ev.gal_work_event': 'Foto con varias mujeres',
+    'ev.cal_fake_alibi': 'Calendario: «Viaje de trabajo» sin verificar',
+    'ev.notes_suspicious': 'Nota con planes comprometedores',
+    'ev.notes_locked': 'Nota privada bloqueada con Face ID',
   },
   en: {
     // Menu
@@ -155,6 +160,8 @@ export const STRINGS = {
     'app.maps': 'Maps',
     'app.gallery': 'Gallery',
     'app.messages': 'Messages',
+    'app.calendar': 'Calendar',
+    'app.notes': 'Notes',
     // Evidence board
     'evidence.title': 'Evidence',
     'evidence.empty': "Nothing captured yet.\nExplore the apps.",
@@ -258,6 +265,9 @@ export const STRINGS = {
     'ev.gal_surprise_photo': 'Photo of decorations/gift',
     'ev.gal_old_photo': 'Photo with girl (old album)',
     'ev.gal_work_event': 'Photo with several women',
+    'ev.cal_fake_alibi': 'Calendar: «Work trip» unverified',
+    'ev.notes_suspicious': 'Note with incriminating plans',
+    'ev.notes_locked': 'Private note locked with Face ID',
   }
 };
 

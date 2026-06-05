@@ -1,7 +1,7 @@
 # Session Status
 
 **Last updated:** 2026-06-05  
-**Phase:** Feature complete — all major improvements committed  
+**Phase:** Feature complete — Calendar + Notes apps added  
 **Repo:** https://github.com/icabrera0/Stalkel (public)
 
 ## What's Done
@@ -11,27 +11,30 @@
 - [x] GitHub Pages live
 - [x] **iPhone-style phone UI** — Dynamic Island, titanium frame, CSS status bar, side buttons
 - [x] **Web Audio API sounds** — tap, appOpen, back, capture, boardOpen, boardClose, verdict, correct, wrong
-- [x] **Pixel art photos** — canvas-based 16×16 procedural art in Gallery and Instagram (js/pixelart.js)
+- [x] **Real photos via picsum.photos** — seeded CDN URLs in Gallery + Instagram (replaced pixel art)
 - [x] **Evidence badge** — counter on board button, pulses on each capture
 - [x] **Varied WhatsApp content** — gfConvoPool (4 variants), familyConvoPool (3 variants), random friend thread
-- [x] **Instagram depth** — suspectPostPool (6 variants, picks 2), otherAccounts feed (4 accounts, picks 2)
-- [x] **Verifiable red herrings** — alibi clues planted in other apps:
-  - `rv_couple_restaurant` → girlfriend confirms in WhatsApp
-  - `rv_parents_gift` → family group WhatsApp confirms
-  - `rv_birthday_flowers` → mom thank-you in Messages (Mamá 🌸 / Mum 🌸)
-  - `rv_biz_trip` → HR SMS in Messages (RRHH Empresa / Company HR)
-- [x] **Red herring reveal strings** updated to direct player to where they can verify
-- [x] Everything committed and pushed (commit 09f6eb8)
+- [x] **Instagram depth** — suspectPostPool (6 variants), otherAccounts feed (4 accounts)
+- [x] **Verifiable red herrings** — alibi clues planted in other apps (flowers → Mamá SMS, biz trip → RRHH SMS, couple restaurant → GF WhatsApp, parents gift → family WA group)
+- [x] **Calendar app** — iOS calendar grid + event detail + screenshot capture; fake "Viaje de trabajo" evidence for guilty
+- [x] **Notes app** — iOS Notes UI with pinned/locked notes; suspicious "To do" note + locked Face ID note for guilty
+- [x] New evidence IDs: `cal_fake_alibi`, `notes_suspicious`, `notes_locked` (in pool + i18n labels)
+- [x] Everything verified E2E in Playwright — 0 JS errors, all 9 apps render correctly
 
-## What Still Could Be Improved (Optional)
+## Apps on Home Screen
 
-- Twitter tweet content pools (currently limited variety)
-- Revolut filler transactions (could have more variety)
-- Verify home-screen display: phone.js sets `display:'grid'` but CSS uses flex (visual bug possible)
-- Full E2E test of the new iPhone UI + sounds + pixel art in browser
+1. Instagram, 2. WhatsApp, 3. Revolut, 4. Twitter, 5. Maps, 6. Galería, 7. Mensajes, 8. Calendario, 9. Notas
+
+## What Could Still Be Improved (Optional)
+
+- Twitter tweet content pools (limited variety)
+- More Revolut filler transactions for variety
+- Calendar icon month/day could be dynamic (currently hardcoded "JUN 5")
+- Cross-referencing key date: tie Revolut transaction date and Maps timeline entry to the same day as cal_fake_alibi
+- English translations for new app icon labels in HTML (currently hardcoded "Calendario"/"Notas")
 
 ## Next Steps (if continuing)
 
-1. Test the live site on GitHub Pages
-2. Fix any visual bugs found
-3. Add Twitter tweet pools for more varied content
+1. Fix Calendar/Notes icon labels to respect `lang` (Calendario ↔ Calendar, Notas ↔ Notes)
+2. Cross-reference key date: same day used in `cal_fake_alibi`, `rv_hotel`/`rv_dinner_2`, and `gm_alibi_route`
+3. Commit + push to GitHub
