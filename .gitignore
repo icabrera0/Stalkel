@@ -1,3 +1,7 @@
 .superpowers/
 node_modules/
 *.log
+SESSION_STATUS.md
+docs/
+.mulch/
+CLAUDE.md
