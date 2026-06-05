@@ -1,7 +1,7 @@
 # Session Status
 
-**Last updated:** 2026-06-04  
-**Phase:** Brainstorming / Design  
+**Last updated:** 2026-06-05  
+**Phase:** Implementation (Tasks 5–18)  
 **Repo:** https://github.com/icabrera0/Stalkel (private)
 
 ## What's Done
@@ -45,3 +45,19 @@ Visual companion is running. User accepted browser-based mockups.
 - URL: http://localhost:50433
 - screen_dir: E:\AI\Stalkel\.superpowers\brainstorm\1591-1780605878\content
 - state_dir: E:\AI\Stalkel\.superpowers\brainstorm\1591-1780605878\state
+
+
+## Completed Tasks
+
+- ✅ Task 1: Scaffold
+- ✅ Task 2: RNG module (mulberry32) — 5/5 tests
+- ✅ Task 3: i18n module (138 keys ES+EN, full pools) — 5/5 tests  
+- ✅ Task 4: Scenario generator (all 7 apps, evidence selection) — 14/14 tests
+- ✅ Task 5: Phone frame + CSS (style.css 649 lines, apps.css 854 lines)
+- ✅ Task 6: Phone controller (js/phone.js) + index.html phone structure
+- ✅ Task 7: Instagram app (tabs, detail views, capture mechanic)
+- ✅ Task 8: WhatsApp app (threads, chat bubbles, voice/location/deleted msgs)
+
+## In Progress
+
+- 🔄 Task 9: Revolut App (Tasks 5–8 all ✅)
