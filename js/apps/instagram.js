@@ -392,8 +392,6 @@ export function render(container, data, scenario, t, onCapture) {
 
     // ── Tab switching ─────────────────────────────────────────────────────────
     const sections = [feedSection, dmSection, actSection];
-    const IG_GRADIENT = 'linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)';
-
     function activateTab(idx) {
       tabEls.forEach((el, i) => {
         const active = i === idx;
