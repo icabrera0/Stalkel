@@ -1,7 +1,6 @@
 export function createPhone(container, scenario, t, onCapture) {
   let currentApp = null;
 
-  const phoneEl = container.querySelector('.phone');
   const screenEl = container.querySelector('.screen');
   const backBtn = container.querySelector('.btn-back');
   const homeScreen = container.querySelector('.home-screen');
