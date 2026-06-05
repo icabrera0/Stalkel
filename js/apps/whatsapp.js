@@ -3,6 +3,10 @@ export function render(container, data, scenario, t, onCapture) {
 
   // ── Helpers ─────────────────────────────────────────────────────────────────
 
+  function esc(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
   function initials(name) {
     return (name || '?').charAt(0).toUpperCase();
   }
@@ -14,7 +18,7 @@ export function render(container, data, scenario, t, onCapture) {
     if (item.isUnknown) {
       return `<div class="wa-avatar" style="background:#9e9e9e;">❓</div>`;
     }
-    return `<div class="wa-avatar" style="background:${item.avatarColor || '#075E54'};">${initials(item.contactName)}</div>`;
+    return `<div class="wa-avatar" style="background:${item.avatarColor || '#075E54'};">${initials(esc(item.contactName))}</div>`;
   }
 
   function captureLabel(item) {
@@ -45,10 +49,10 @@ export function render(container, data, scenario, t, onCapture) {
     } else if (msg.type === 'voice') {
       innerHtml = `🎤 Nota de voz · 0:${String(Math.floor(Math.random() * 59) + 1).padStart(2, '0')}`;
     } else if (msg.type === 'location') {
-      const address = msg.text || 'Ubicación compartida';
+      const address = esc(msg.text || 'Ubicación compartida');
       innerHtml = `📍 Ubicación compartida · ${address}`;
     } else {
-      innerHtml = msg.text || '';
+      innerHtml = esc(msg.text || '');
     }
 
     return `<div style="display:flex;flex-direction:column;${wrapAlign}">
@@ -84,6 +88,10 @@ export function render(container, data, scenario, t, onCapture) {
     nameEl.style.cssText = 'flex:1;font-size:15px;font-weight:600;';
     nameEl.textContent = item.contactName || '';
 
+    // Chat background area (declare before button that references it)
+    const chatArea = document.createElement('div');
+    chatArea.style.cssText = 'flex:1;overflow-y:auto;padding:8px 0;background:#ECE5DD;display:flex;flex-direction:column;';
+
     // Screenshot button (top-right)
     const capBtn = document.createElement('button');
     capBtn.textContent = t('phone.screenshot');
@@ -104,10 +112,6 @@ export function render(container, data, scenario, t, onCapture) {
     hdr.appendChild(nameEl);
     hdr.appendChild(capBtn);
     detail.appendChild(hdr);
-
-    // Chat background area
-    const chatArea = document.createElement('div');
-    chatArea.style.cssText = 'flex:1;overflow-y:auto;padding:8px 0;background:#ECE5DD;display:flex;flex-direction:column;';
 
     const messages = item.messages || [];
     if (messages.length === 0) {
@@ -156,11 +160,11 @@ export function render(container, data, scenario, t, onCapture) {
         ${avatarHtml(item)}
         <div class="wa-chat-content">
           <div class="wa-chat-header">
-            <span class="wa-chat-name">${item.contactName || ''}</span>
-            <span class="wa-chat-time">${item.lastTime || ''}</span>
+            <span class="wa-chat-name">${esc(item.contactName || '')}</span>
+            <span class="wa-chat-time">${esc(item.lastTime || '')}</span>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span class="wa-chat-preview">${item.lastMessage || ''}</span>
+            <span class="wa-chat-preview">${esc(item.lastMessage || '')}</span>
             ${unreadBadge}
           </div>
         </div>`;
