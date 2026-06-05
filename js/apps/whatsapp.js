@@ -51,7 +51,7 @@ export function render(container, data, scenario, t, onCapture) {
     } else if (msg.type === 'voice') {
       innerHtml = `🎤 Nota de voz · 0:${String(Math.floor(Math.random() * 59) + 1).padStart(2, '0')}`;
     } else if (msg.type === 'location') {
-      const address = esc(msg.text || 'Ubicación compartida');
+      const address = esc(msg.address || msg.text || 'Ubicación compartida');
       innerHtml = `📍 Ubicación compartida · ${address}`;
     } else {
       innerHtml = esc(msg.text || '');

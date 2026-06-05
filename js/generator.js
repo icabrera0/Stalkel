@@ -24,7 +24,6 @@ const EVIDENCE_POOL = {
     { id: 'wa_location_shared', type: 'real' },
     { id: 'wa_emoji_heavy', type: 'real' },
     { id: 'wa_voice_note_unknown', type: 'real' },
-    { id: 'wa_confession', type: 'real' },
     { id: 'wa_sister', type: 'redHerring' },
     { id: 'wa_work_group', type: 'redHerring' },
     { id: 'wa_old_ex', type: 'redHerring' },
@@ -473,14 +472,15 @@ function generateAppContent(rng, lang, pools, ctx) {
     {msgs:[{from:'them',text:'Watching the match tonight?',time:'20:00'},{from:'me',text:'Obviously, usual pub 🍺',time:'20:02'}], last:'Obviously, usual pub 🍺', lastTime:'20:02'},
     {msgs:[{from:'them',text:'Mate what a goal yesterday 🔥',time:'09:12'},{from:'me',text:'Insane haha',time:'09:30'}], last:'Insane haha', lastTime:'09:30'},
   ];
+  const friendConvo = rng.pick(friendConvoPool);
   waItems.push(item(`wa_f${waIdx++}`, null, {
     subtype: 'thread',
     contactName: friendName,
     avatarColor: rng.pick(['#74C0FC','#FFD43B','#63E6BE']),
     isUnknown: false,
-    messages: rng.pick(friendConvoPool).msgs,
-    lastMessage: rng.pick(friendConvoPool).last,
-    lastTime: rng.pick(['09:30','20:02','18:45']),
+    messages: friendConvo.msgs,
+    lastMessage: friendConvo.last,
+    lastTime: friendConvo.lastTime,
     unread: 0
   }));
 
