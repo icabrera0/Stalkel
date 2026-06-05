@@ -576,6 +576,14 @@
   color: #999;
 }
 
+.gm-saved-place {
+  /* Semantic hook for saved_place items — visual style from .gm-place-item */
+}
+
+.gm-timeline {
+  /* Semantic hook for timeline_entry items */
+}
+
 /* =====================================================
    GALLERY APP STYLES
    ===================================================== */
