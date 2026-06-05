@@ -386,7 +386,7 @@ function startGame(scenario, t, appEl) {
   // Status bar time — update every 30s
   const statusTime = appEl.querySelector('.status-time');
   function updateTime() {
-    statusTime.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    if (statusTime) statusTime.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
   updateTime();
   setInterval(updateTime, 30000);
