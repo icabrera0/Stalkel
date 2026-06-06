@@ -15,7 +15,7 @@ import * as Calendar from './apps/calendar.js';
 import * as Notes from './apps/notes.js';
 import * as Contacts from './apps/contacts.js';
 import { CASE_LIBRARY, resolveSeed } from './cases.js';
-import { loadProgress, clearProgress } from './storage.js';
+import { loadProgress, clearProgress, saveProgress } from './storage.js';
 import { createQuestions } from './questions.js';
 import { createHints } from './hints.js';
 
@@ -108,7 +108,7 @@ function showCaseSelect(lang, t, appEl) {
   // Resume banner
   if (saved) {
     appEl.querySelector('.btn-resume')?.addEventListener('click', () => {
-      startIntro(saved.lang, saved.seed, appEl);
+      startIntro(saved.lang, saved.seed, appEl, saved.capturedIds || []);
     });
     appEl.querySelector('.btn-discard')?.addEventListener('click', () => {
       clearProgress();
@@ -246,7 +246,7 @@ function showCaseIntro(scenario, t, appEl, onProceed) {
 
 // ── Intro ─────────────────────────────────────────────────────────────────────
 
-function startIntro(lang, seed, appEl) {
+function startIntro(lang, seed, appEl, resumedCapturedIds = []) {
   const scenario = generateScenario(seed, lang);
   const t = createI18n(lang);
 
@@ -333,7 +333,7 @@ function startIntro(lang, seed, appEl) {
           introEl.style.opacity = '0';
           setTimeout(() => {
             introEl.remove();
-            startGame(scenario, t, appEl);
+            startGame(scenario, t, appEl, resumedCapturedIds);
           }, 500);
         });
       }, 300);
@@ -494,7 +494,7 @@ function showDMChat(introEl, scenario, t, onAccept) {
 
 // ── Game ──────────────────────────────────────────────────────────────────────
 
-function startGame(scenario, t, appEl) {
+function startGame(scenario, t, appEl, resumedCapturedIds = []) {
   // Show phone, hide menu and any leftover intro
   appEl.querySelector('.menu-screen').style.display = 'none';
   const phoneWrap = appEl.querySelector('.phone-wrap');
@@ -512,6 +512,16 @@ function startGame(scenario, t, appEl) {
 
   // Evidence board (phoneEl = .phone)
   const board = createEvidenceBoard(phoneEl, scenario, t);
+
+  // Auto-save after each capture
+  board.onSave(capturedIds => {
+    saveProgress(scenario.seed, scenario.lang, capturedIds);
+  });
+
+  // Silently replay any previously captured evidence (resume path)
+  resumedCapturedIds.forEach(id => {
+    if (id) board.add(id, t('ev.' + id), '↩', '');
+  });
 
   // Hint system
   const hints = createHints(phoneEl, scenario, t, () => board.getCollected());

@@ -56,6 +56,7 @@ export function createEvidenceBoard(phoneEl, scenario, t) {
 
   closeBtn.addEventListener('click', () => { audio.boardClose(); hide(); });
 
+  let _onSave = null;
   let _onVerdict = null;
   verdictBtn.addEventListener('click', () => {
     audio.verdict();
@@ -86,6 +87,7 @@ export function createEvidenceBoard(phoneEl, scenario, t) {
 
     allItems.push({ evidenceId, label, appName, detailHtml });
     document.dispatchEvent(new CustomEvent('evidence:captured', { detail: { evidenceId } }));
+    _onSave?.([...allItems.map(i => i.evidenceId).filter(id => id !== null && id !== undefined)]);
 
     const { bgColor, emoji: extractedEmoji } = extractPreviewInfo(detailHtml || '');
     const displayEmoji = extractedEmoji || getAppEmoji(appName);
@@ -138,5 +140,9 @@ export function createEvidenceBoard(phoneEl, scenario, t) {
     return allItems.length;
   }
 
-  return { add, show, hide, getCollected, getCount };
+  function onSave(cb) {
+    _onSave = cb;
+  }
+
+  return { add, show, hide, getCollected, getCount, onSave };
 }
