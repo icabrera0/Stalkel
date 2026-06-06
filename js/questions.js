@@ -1,6 +1,8 @@
 export function createQuestions(phoneEl, scenario, t) {
   const answered = new Set();
   const notified = new Set();
+  let activeOverlay = null;
+  const timerIds = [];
 
   function checkUnlock(capturedEvidenceId) {
     if (!scenario.questions) return;
@@ -10,13 +12,15 @@ export function createQuestions(phoneEl, scenario, t) {
         q.unlockAfter === null || q.unlockAfter === capturedEvidenceId;
       if (shouldUnlock) {
         notified.add(q.id);
-        setTimeout(() => showQuestion(q), 400);
+        const timerId = setTimeout(() => showQuestion(q), 400);
+        timerIds.push(timerId);
       }
     });
   }
 
   function showQuestion(q) {
     if (answered.has(q.id)) return;
+    if (activeOverlay) return; // another question is already showing
 
     const overlay = document.createElement('div');
     overlay.className = 'question-overlay';
@@ -32,6 +36,7 @@ export function createQuestions(phoneEl, scenario, t) {
         <div class="question-feedback" style="display:none"></div>
       </div>
     `;
+    activeOverlay = overlay;
     phoneEl.appendChild(overlay);
     requestAnimationFrame(() => overlay.classList.add('visible'));
 
@@ -40,7 +45,10 @@ export function createQuestions(phoneEl, scenario, t) {
 
     function dismiss() {
       overlay.classList.remove('visible');
-      setTimeout(() => overlay.remove(), 300);
+      setTimeout(() => {
+        overlay.remove();
+        activeOverlay = null;
+      }, 300);
     }
 
     overlay.querySelector('.btn-q-skip').addEventListener('click', () => {
@@ -60,8 +68,16 @@ export function createQuestions(phoneEl, scenario, t) {
     });
   }
 
+  function destroy() {
+    timerIds.forEach(id => clearTimeout(id));
+    if (activeOverlay) {
+      activeOverlay.remove();
+      activeOverlay = null;
+    }
+  }
+
   // Unlock Q1 immediately (unlockAfter === null)
   checkUnlock(null);
 
-  return { checkUnlock };
+  return { checkUnlock, destroy };
 }

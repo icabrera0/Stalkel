@@ -518,6 +518,9 @@ function startGame(scenario, t, appEl) {
     questions.checkUnlock(e.detail.evidenceId);
   });
 
+  // Store questions reference for cleanup (exposed for future use)
+  window.stalkieQuestions = questions;
+
   // Evidence button → show board → verdict on callback
   const btnEvidence = appEl.querySelector('.btn-evidence');
   btnEvidence.addEventListener('click', () => {
