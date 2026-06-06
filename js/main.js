@@ -97,7 +97,7 @@ function showCaseSelect(lang, t, appEl) {
   appEl.querySelectorAll('.case-card').forEach(card => {
     card.addEventListener('click', () => {
       const caseEntry = CASE_LIBRARY.find(c => c.id === card.dataset.case);
-      const seed = resolveSeed(caseEntry);
+      const seed = caseEntry ? resolveSeed(caseEntry) : Date.now();
       clearProgress();
       startIntro(lang, seed, appEl);
     });
@@ -106,7 +106,6 @@ function showCaseSelect(lang, t, appEl) {
   // Resume banner
   if (saved) {
     appEl.querySelector('.btn-resume')?.addEventListener('click', () => {
-      clearProgress();
       startIntro(saved.lang, saved.seed, appEl);
     });
     appEl.querySelector('.btn-discard')?.addEventListener('click', () => {
