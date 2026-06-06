@@ -881,3 +881,89 @@ body {
   font-weight: 600;
   cursor: pointer;
 }
+
+/* ── Questions overlay ── */
+.question-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  align-items: flex-end;
+  opacity: 0;
+  transition: opacity 0.25s;
+  pointer-events: none;
+}
+.question-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.question-card {
+  width: 100%;
+  background: #1e1e2e;
+  border-radius: 24px 24px 0 0;
+  padding: 24px 20px 32px;
+  box-sizing: border-box;
+}
+.question-title {
+  color: #C77DFF;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+.question-text {
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+.question-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+  color: white;
+  font-size: 14px;
+  resize: none;
+  margin-bottom: 14px;
+  font-family: inherit;
+}
+.question-input::placeholder { color: rgba(255,255,255,0.35); }
+.question-actions {
+  display: flex;
+  gap: 10px;
+}
+.btn-q-skip {
+  flex: 1;
+  padding: 12px;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.7);
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.btn-q-submit {
+  flex: 2;
+  padding: 12px;
+  background: linear-gradient(135deg,#FF6B9D,#C77DFF);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+.question-feedback {
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 10px;
+}

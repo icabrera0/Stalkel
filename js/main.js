@@ -16,6 +16,7 @@ import * as Notes from './apps/notes.js';
 import * as Contacts from './apps/contacts.js';
 import { CASE_LIBRARY, resolveSeed } from './cases.js';
 import { loadProgress, clearProgress } from './storage.js';
+import { createQuestions } from './questions.js';
 
 const APPS = {
   instagram: Instagram,
@@ -510,6 +511,12 @@ function startGame(scenario, t, appEl) {
 
   // Evidence board (phoneEl = .phone)
   const board = createEvidenceBoard(phoneEl, scenario, t);
+
+  // Questions overlay
+  const questions = createQuestions(phoneEl, scenario, t);
+  document.addEventListener('evidence:captured', e => {
+    questions.checkUnlock(e.detail.evidenceId);
+  });
 
   // Evidence button → show board → verdict on callback
   const btnEvidence = appEl.querySelector('.btn-evidence');
