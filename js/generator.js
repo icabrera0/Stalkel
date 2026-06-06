@@ -139,15 +139,12 @@ function generateContacts(rng, pools, ctx) {
   }
 
   // Guilty run: add the secret contact with an aliased name
+  // ctx.secretAlias is pre-generated in generateAppContent to match the WhatsApp wa_contact_alias thread
   if (ctx.outcome === 'guilty') {
-    const aliases = ctx.lang === 'es'
-      ? ['Cariño 🌹','Carlos del gym','Andrea trabajo','Compañero/a','Primo/a']
-      : ['Darling 🌹','Gym buddy','Work colleague','Coworker','Cousin'];
-    const alias = rng.pick(aliases);
     items.push({
       id: 'ct_secret',
       evidenceId: 'wa_contact_alias',
-      name: alias,
+      name: ctx.secretAlias,
       phone: generatePhone(rng),
       avatarColor: ctx.secretContact.avatarColor,
       relation: null,
@@ -159,7 +156,7 @@ function generateContacts(rng, pools, ctx) {
   return { items: rng.shuffle(items) };
 }
 
-function generateQuestions(rng, lang, outcome, realEvidenceIds, ctx) {
+function generateQuestions(rng, lang, outcome, realEvidenceIds, ctx) { // rng reserved for future random question selection
   const es = lang === 'es';
 
   return [
@@ -177,9 +174,9 @@ function generateQuestions(rng, lang, outcome, realEvidenceIds, ctx) {
     {
       id: 'q2',
       unlockAfter: realEvidenceIds[0] ?? null,
-      question: es
-        ? `¿Quién crees que se oculta tras el contacto sospechoso?`
-        : `Who do you think is hidden behind the suspicious contact?`,
+      question: outcome === 'guilty'
+        ? (es ? '¿Quién crees que se oculta tras el contacto sospechoso?' : 'Who do you think is hidden behind the suspicious contact?')
+        : (es ? '¿Ves algo inusual en los contactos o mensajes?' : 'Do you notice anything unusual in the contacts or messages?'),
       keywords: outcome === 'guilty'
         ? [ctx.secretContact.name.toLowerCase().split(' ')[0], 'chica', 'mujer', 'girl', 'woman', 'desconocida', 'unknown']
         : ['nadie', 'nobody', 'no', 'inocente', 'innocent'],
@@ -223,7 +220,7 @@ function selectEvidence(rng, outcome) {
 }
 
 function generateAppContent(rng, lang, pools, ctx) {
-  const { suspect, girlfriend, secretContact, outcome, realEvidenceIds, redHerringIds, secretRestaurant, hotelName, secretAddress, gymName, monthsCheating } = ctx;
+  const { suspect, girlfriend, secretContact, outcome, realEvidenceIds, redHerringIds, secretRestaurant, hotelName, secretAddress, gymName, monthsCheating, secretAlias } = ctx;
 
   // Helper: create a base item
   function item(id, evidenceId, extra) {
@@ -587,7 +584,7 @@ function generateAppContent(rng, lang, pools, ctx) {
   }));
 
   if (realEvidenceIds.includes('wa_contact_alias')) {
-    const alias = rng.pick(pools.workAliases);
+    const alias = ctx.secretAlias;
     waItems.push(item(`wa_ev_alias`, 'wa_contact_alias', {
       subtype: 'thread',
       contactName: alias,
@@ -1429,7 +1426,7 @@ function generateAppContent(rng, lang, pools, ctx) {
     });
   }
 
-  const contacts = generateContacts(rng, pools, { suspect, girlfriend, secretContact, outcome, lang });
+  const contacts = generateContacts(rng, pools, { suspect, girlfriend, secretContact, outcome, lang, secretAlias: ctx.secretAlias });
 
   return {
     instagram: { items: igItems },
@@ -1480,10 +1477,15 @@ export function generateScenario(seed, lang) {
   const girlfriend = { name: girlfriendName, username: girlfriendUsername, avatarColor: girlfriendAvatarColor };
   const secretContact = { name: secretName, username: secretUsername, age: secretAge, avatarColor: secretAvatarColor };
 
+  // Pre-generate the alias used for the secret contact in both WhatsApp and Contacts
+  // so both apps show the same aliased name (consistency for cross-referencing)
+  const secretAlias = rng.pick(pools.workAliases);
+
   const appContent = generateAppContent(rng, lang, pools, {
     suspect, girlfriend, secretContact, outcome,
     realEvidenceIds, redHerringIds,
-    secretRestaurant, hotelName, secretAddress, gymName, monthsCheating
+    secretRestaurant, hotelName, secretAddress, gymName, monthsCheating,
+    secretAlias
   });
 
   const questions = generateQuestions(rng, lang, outcome, realEvidenceIds, { suspect, girlfriend, secretContact, relationshipMonths });
