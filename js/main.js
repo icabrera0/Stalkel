@@ -513,14 +513,14 @@ function startGame(scenario, t, appEl, resumedCapturedIds = []) {
   // Evidence board (phoneEl = .phone)
   const board = createEvidenceBoard(phoneEl, scenario, t);
 
-  // Auto-save after each capture
-  board.onSave(capturedIds => {
-    saveProgress(scenario.seed, scenario.lang, capturedIds);
-  });
-
   // Silently replay any previously captured evidence (resume path)
   resumedCapturedIds.forEach(id => {
     if (id) board.add(id, t('ev.' + id), '↩', '');
+  });
+
+  // Auto-save after each capture (register AFTER replay to avoid spurious writes)
+  board.onSave(capturedIds => {
+    saveProgress(scenario.seed, scenario.lang, capturedIds);
   });
 
   // Hint system
