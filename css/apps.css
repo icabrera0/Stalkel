@@ -959,3 +959,14 @@ a {
   color: white; border: none; border-radius: 24px; font-size: 15px;
   cursor: pointer; font-weight: 600;
 }
+
+/* ── Locked content ── */
+.wa-thread-locked {
+  opacity: 0.5;
+  cursor: default;
+}
+.wa-thread-locked .wa-thread-preview {
+  color: #FF6B9D;
+  font-size: 12px;
+  font-style: italic;
+}

@@ -150,13 +150,18 @@ export function render(container, data, scenario, t, onCapture) {
     const items = data.items || [];
 
     items.forEach(item => {
+      const isLocked = item.locked && !item._unlocked;
+
       const row = document.createElement('div');
-      row.className = 'wa-chat-item';
+      row.className = 'wa-chat-item wa-thread' + (isLocked ? ' wa-thread-locked' : '');
+      row.dataset.id = item.id;
 
       // Unread badge
-      const unreadBadge = item.unread > 0
+      const unreadBadge = (!isLocked && item.unread > 0)
         ? `<span style="background:#25D366;color:white;border-radius:50%;min-width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;padding:0 3px;">${item.unread}</span>`
         : '';
+
+      const previewText = isLocked ? t('locked.hint') : esc(item.lastMessage || '');
 
       row.innerHTML = `
         ${avatarHtml(item)}
@@ -166,13 +171,33 @@ export function render(container, data, scenario, t, onCapture) {
             <span class="wa-chat-time">${esc(item.lastTime || '')}</span>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span class="wa-chat-preview">${esc(item.lastMessage || '')}</span>
+            <span class="wa-chat-preview wa-thread-preview">${previewText}</span>
             ${unreadBadge}
           </div>
         </div>`;
 
-      row.addEventListener('click', () => showDetail(item));
+      row.addEventListener('click', () => {
+        if (item.locked && !item._unlocked) return;
+        showDetail(item);
+      });
       list.appendChild(row);
+    });
+
+    // Unlock threads in real time when evidence is captured
+    document.addEventListener('evidence:captured', e => {
+      if (!data || !data.items) return;
+      data.items.forEach(item => {
+        if (item.locked && item.unlockedBy === e.detail.evidenceId && !item._unlocked) {
+          item._unlocked = true;
+          const row = list.querySelector(`.wa-thread[data-id="${item.id}"]`);
+          if (row) {
+            row.classList.remove('wa-thread-locked');
+            const previewEl = row.querySelector('.wa-thread-preview');
+            if (previewEl) previewEl.textContent = item.lastMessage;
+            row.onclick = () => showDetail(item);
+          }
+        }
+      });
     });
 
     if (items.length === 0) {

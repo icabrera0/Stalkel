@@ -85,6 +85,7 @@ export function createEvidenceBoard(phoneEl, scenario, t) {
     }
 
     allItems.push({ evidenceId, label, appName, detailHtml });
+    document.dispatchEvent(new CustomEvent('evidence:captured', { detail: { evidenceId } }));
 
     const { bgColor, emoji: extractedEmoji } = extractPreviewInfo(detailHtml || '');
     const displayEmoji = extractedEmoji || getAppEmoji(appName);
