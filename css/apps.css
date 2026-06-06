@@ -860,3 +860,73 @@ a {
   aspect-ratio: 1;
   border-radius: 8px;
 }
+
+/* ── Contacts ── */
+.app-contacts-header {
+  background: #fff;
+  color: #000;
+  padding: 12px 16px;
+  font-weight: 600;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 17px;
+}
+.contacts-count { color: #999; font-size: 14px; font-weight: 400; }
+.contacts-search { padding: 8px 16px; background: #f5f5f5; }
+.contacts-search-input {
+  width: 100%; padding: 8px 12px; border-radius: 10px;
+  border: none; background: #e0e0e0; font-size: 14px; box-sizing: border-box;
+  color: #999;
+}
+.contacts-list { overflow-y: auto; background: #fff; }
+.contact-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px; border-bottom: 1px solid #f0f0f0;
+  cursor: pointer; position: relative;
+}
+.contact-row:active { background: #f9f9f9; }
+.contact-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 700; font-size: 18px; flex-shrink: 0;
+}
+.contact-info { flex: 1; min-width: 0; }
+.contact-name { font-weight: 500; font-size: 15px; color: #111; }
+.contact-relation { font-size: 12px; color: #999; margin-top: 2px; }
+.contact-suspicious-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: #FF6B9D; flex-shrink: 0;
+}
+.contact-detail-header {
+  padding: 12px 16px; border-bottom: 1px solid #eee; background: #fff;
+}
+.contacts-back {
+  background: none; border: none; color: #007AFF; font-size: 15px;
+  cursor: pointer; padding: 0;
+}
+.contact-detail-avatar {
+  width: 80px; height: 80px; border-radius: 50%; margin: 24px auto 12px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 700; font-size: 36px;
+}
+.contact-detail-name {
+  text-align: center; font-size: 22px; font-weight: 600; color: #111;
+  padding: 0 16px;
+}
+.contact-detail-relation { text-align: center; color: #999; font-size: 14px; margin-top: 4px; }
+.contact-detail-phone {
+  text-align: center; color: #007AFF; font-size: 16px; margin-top: 12px;
+  padding: 12px 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee;
+  margin: 16px 16px 0;
+}
+.contact-detail-note {
+  text-align: center; color: #FF6B9D; font-size: 12px; margin: 12px 16px 0;
+}
+.btn-capture-contact {
+  display: block; margin: 24px auto; padding: 12px 24px;
+  background: linear-gradient(135deg,#FF6B9D,#C77DFF);
+  color: white; border: none; border-radius: 24px; font-size: 15px;
+  cursor: pointer; font-weight: 600;
+}

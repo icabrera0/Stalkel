@@ -13,6 +13,7 @@ import * as Gallery from './apps/gallery.js';
 import * as Messages from './apps/messages.js';
 import * as Calendar from './apps/calendar.js';
 import * as Notes from './apps/notes.js';
+import * as Contacts from './apps/contacts.js';
 
 const APPS = {
   instagram: Instagram,
@@ -24,6 +25,7 @@ const APPS = {
   messages: Messages,
   calendar: Calendar,
   notes: Notes,
+  contacts: Contacts,
 };
 
 const appEl = document.getElementById('app');
