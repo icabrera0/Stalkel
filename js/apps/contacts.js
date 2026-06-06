@@ -1,10 +1,15 @@
+import { audio } from '../audio.js';
+
 export function render(container, data, scenario, t, onCapture) {
+  if (!data || !data.items) return;
+
   container.innerHTML = `
     <div class="app-header app-contacts-header">
       <span>${t('app.contacts')}</span>
       <span class="contacts-count">${data.items.length}</span>
     </div>
     <div class="contacts-search">
+      <!-- Search input is intentionally non-functional (visual placeholder only) -->
       <input type="text" placeholder="${t('contacts.search_placeholder')}" class="contacts-search-input" readonly>
     </div>
     <div class="contacts-list" id="contacts-list-${Date.now()}"></div>
@@ -37,6 +42,10 @@ export function render(container, data, scenario, t, onCapture) {
   }
 
   function showDetail(item) {
+    const suspiciousNote = scenario.lang === 'es'
+      ? 'Número guardado con nombre falso'
+      : 'Number saved under a fake name';
+
     const detailHtml = `
       <div class="contact-detail-avatar" style="background:${item.avatarColor}">
         ${item.name.charAt(0).toUpperCase()}
@@ -44,7 +53,7 @@ export function render(container, data, scenario, t, onCapture) {
       <div class="contact-detail-name">${item.name}</div>
       ${item.relation ? `<div class="contact-detail-relation">${item.relation}</div>` : ''}
       <div class="contact-detail-phone">${item.phone}</div>
-      ${item.isSuspicious ? `<div class="contact-detail-note">⚠️ ${t('locked.hint').replace('🔒 Bloqueado — ', '').replace('🔒 Locked — ', '')}</div>` : ''}
+      ${item.isSuspicious ? `<div class="contact-detail-note">⚠️ ${suspiciousNote}</div>` : ''}
     `;
 
     detailEl.innerHTML = `
@@ -63,6 +72,7 @@ export function render(container, data, scenario, t, onCapture) {
     });
 
     detailEl.querySelector('.btn-capture-contact').addEventListener('click', () => {
+      audio.capture();
       const evId = item.evidenceId || null;
       const label = evId ? t('ev.' + evId) : item.name;
       onCapture(evId, label, t('app.contacts'), detailHtml);
