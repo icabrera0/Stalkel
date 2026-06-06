@@ -211,6 +211,37 @@ function showMenu(appEl, lang) {
   playBtn.addEventListener('click', () => { audio.tap(); showCaseSelect(lang, t, appEl); });
 }
 
+// ── Case Intro Card ──────────────────────────────────────────────────────────
+
+function showCaseIntro(scenario, t, appEl, onProceed) {
+  const s = scenario.suspect;
+  const lang = scenario.lang;
+
+  const mysteryText = lang === 'es'
+    ? `Sospechas que ${s.name} podría estar siendo infiel. Tienes acceso a su teléfono. Encuentra las pruebas.`
+    : `You suspect ${s.name} might be cheating. You have access to his phone. Find the evidence.`;
+
+  appEl.innerHTML = `
+    <div class="case-intro-screen">
+      <div class="case-intro-card">
+        <div class="case-intro-avatar" style="background:${s.avatarColor}">
+          ${s.name.charAt(0)}
+        </div>
+        <div class="case-intro-name">${s.name}</div>
+        <div class="case-intro-job">${s.job} · ${s.city}</div>
+        <div class="case-intro-tags">
+          <span class="case-intro-tag">${t('intro_card.relationship', { months: scenario.relationshipMonths })}</span>
+          <span class="case-intro-tag">${s.age} ${lang === 'es' ? 'años' : 'years old'}</span>
+        </div>
+        <div class="case-intro-mystery">${mysteryText}</div>
+        <button class="case-intro-btn">${t('intro_card.start_btn')}</button>
+      </div>
+    </div>
+  `;
+
+  appEl.querySelector('.case-intro-btn').addEventListener('click', onProceed);
+}
+
 // ── Intro ─────────────────────────────────────────────────────────────────────
 
 function startIntro(lang, seed, appEl) {
@@ -220,89 +251,92 @@ function startIntro(lang, seed, appEl) {
   // Hide menu
   appEl.querySelector('.menu-screen').style.display = 'none';
 
-  // Inject bounce keyframes once
-  if (!document.getElementById('intro-keyframes')) {
-    const style = document.createElement('style');
-    style.id = 'intro-keyframes';
-    style.textContent = `
-      @keyframes bounce {
-        0%, 80%, 100% { transform: translateY(0); }
-        40% { transform: translateY(-6px); }
-      }
+  // Show case intro card, then proceed to Instagram animation
+  showCaseIntro(scenario, t, appEl, () => {
+    // Inject bounce keyframes once
+    if (!document.getElementById('intro-keyframes')) {
+      const style = document.createElement('style');
+      style.id = 'intro-keyframes';
+      style.textContent = `
+        @keyframes bounce {
+          0%, 80%, 100% { transform: translateY(0); }
+          40% { transform: translateY(-6px); }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    // Create intro container
+    const introEl = document.createElement('div');
+    introEl.className = 'intro-screen';
+    introEl.style.cssText = `
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(180deg, #0f0f1a 0%, #1a0a2e 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      overflow: hidden;
     `;
-    document.head.appendChild(style);
-  }
+    appEl.appendChild(introEl);
 
-  // Create intro container
-  const introEl = document.createElement('div');
-  introEl.className = 'intro-screen';
-  introEl.style.cssText = `
-    position: fixed;
-    inset: 0;
-    background: linear-gradient(180deg, #0f0f1a 0%, #1a0a2e 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-    overflow: hidden;
-  `;
-  appEl.appendChild(introEl);
+    // Phase 1: Instagram-like notification toast slides in from top
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+      position: absolute;
+      top: -80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      border-radius: 16px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: min(340px, 90vw);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      transition: top 0.5s cubic-bezier(0.34,1.56,0.64,1);
+    `;
+    toast.innerHTML = `
+      <div style="
+        width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+        background: linear-gradient(135deg, #833AB4, #E1306C, #F77737);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 22px;
+      ">📷</div>
+      <div>
+        <div style="font-weight: 700; font-size: 13px; color: #111;">Instagram</div>
+        <div style="font-size: 12px; color: #555; margin-top: 2px;">${t('intro.dm_preview')}</div>
+      </div>
+    `;
+    introEl.appendChild(toast);
 
-  // Phase 1: Instagram-like notification toast slides in from top
-  const toast = document.createElement('div');
-  toast.style.cssText = `
-    position: absolute;
-    top: -80px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: white;
-    border-radius: 16px;
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: min(340px, 90vw);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-    transition: top 0.5s cubic-bezier(0.34,1.56,0.64,1);
-  `;
-  toast.innerHTML = `
-    <div style="
-      width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
-      background: linear-gradient(135deg, #833AB4, #E1306C, #F77737);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px;
-    ">📷</div>
-    <div>
-      <div style="font-weight: 700; font-size: 13px; color: #111;">Instagram</div>
-      <div style="font-size: 12px; color: #555; margin-top: 2px;">${t('intro.dm_preview')}</div>
-    </div>
-  `;
-  introEl.appendChild(toast);
-
-  // Slide toast in (double rAF to allow initial paint)
-  requestAnimationFrame(() => {
+    // Slide toast in (double rAF to allow initial paint)
     requestAnimationFrame(() => {
-      toast.style.top = '24px';
-    });
-  });
-
-  // After 1 second slide the toast out and expand into DM chat
-  setTimeout(() => {
-    toast.style.transition = 'opacity 0.3s';
-    toast.style.opacity = '0';
-    setTimeout(() => {
-      toast.remove();
-      showDMChat(introEl, scenario, t, () => {
-        // Fade out intro then start game
-        introEl.style.transition = 'opacity 0.5s';
-        introEl.style.opacity = '0';
-        setTimeout(() => {
-          introEl.remove();
-          startGame(scenario, t, appEl);
-        }, 500);
+      requestAnimationFrame(() => {
+        toast.style.top = '24px';
       });
-    }, 300);
-  }, 1200);
+    });
+
+    // After 1 second slide the toast out and expand into DM chat
+    setTimeout(() => {
+      toast.style.transition = 'opacity 0.3s';
+      toast.style.opacity = '0';
+      setTimeout(() => {
+        toast.remove();
+        showDMChat(introEl, scenario, t, () => {
+          // Fade out intro then start game
+          introEl.style.transition = 'opacity 0.5s';
+          introEl.style.opacity = '0';
+          setTimeout(() => {
+            introEl.remove();
+            startGame(scenario, t, appEl);
+          }, 500);
+        });
+      }, 300);
+    }, 1200);
+  });
 }
 
 function showDMChat(introEl, scenario, t, onAccept) {
