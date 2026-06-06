@@ -157,17 +157,77 @@ export function render(container, data, scenario, t, onCapture) {
           const cell = document.createElement('div');
           cell.className = 'gal-photo-item';
           cell.style.cssText = 'overflow:hidden;position:relative;cursor:pointer;background:#f0f0f0;';
-          const evThumb = evidencePhotoEl(item.evidenceId, item.caption);
-          if (evThumb) {
-            cell.appendChild(evThumb);
+
+          // ── Trash items that need recovery ──────────────────────────────────
+          if (item.recovered === false) {
+            // Show greyed-out placeholder (dark bin thumbnail)
+            const placeholder = document.createElement('div');
+            placeholder.className = 'gallery-emoji';
+            placeholder.style.cssText = [
+              'width:100%;height:100%;',
+              'background:#2a2a2a;',
+              'display:flex;align-items:center;justify-content:center;',
+              'font-size:36px;filter:grayscale(1);opacity:0.7;',
+            ].join('');
+            placeholder.textContent = '🗑️';
+            cell.appendChild(placeholder);
+
+            // Overlay with Recover button
+            const overlay = document.createElement('div');
+            overlay.className = 'gallery-trash-overlay';
+
+            const recoverBtn = document.createElement('button');
+            recoverBtn.className = 'btn-recover';
+            recoverBtn.textContent = t('gallery.recover');
+            recoverBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              recoverBtn.disabled = true;
+              recoverBtn.textContent = t('gallery.recovering');
+
+              setTimeout(() => {
+                // Mark item as recovered
+                item.recovered = true;
+
+                // Remove overlay
+                overlay.remove();
+
+                // Replace placeholder with recovered emoji content
+                placeholder.textContent = item.imageEmoji || '📸';
+                placeholder.style.cssText = [
+                  'width:100%;height:100%;',
+                  `background:${item.imageColor || '#ccc'};`,
+                  'display:flex;align-items:center;justify-content:center;',
+                  'font-size:36px;filter:none;opacity:1;',
+                ].join('');
+
+                // Apply fade-in animation via class
+                cell.classList.add('photo-recovered');
+              }, 800);
+            });
+
+            overlay.appendChild(recoverBtn);
+            cell.appendChild(overlay);
+
+            // Clicking the cell while unrecovered does nothing (recover button handles it)
+            cell.addEventListener('click', () => {
+              if (item.recovered === false) return;
+              showDetail(item, buildMain);
+            });
           } else {
-            const thumbImg = document.createElement('img');
-            thumbImg.src = photoUrl(item.id || 'gal_thumb', 120);
-            thumbImg.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
-            thumbImg.loading = 'lazy';
-            cell.appendChild(thumbImg);
+            // ── Normal photo cell ──────────────────────────────────────────────
+            const evThumb = evidencePhotoEl(item.evidenceId, item.caption);
+            if (evThumb) {
+              cell.appendChild(evThumb);
+            } else {
+              const thumbImg = document.createElement('img');
+              thumbImg.src = photoUrl(item.id || 'gal_thumb', 120);
+              thumbImg.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+              thumbImg.loading = 'lazy';
+              cell.appendChild(thumbImg);
+            }
+            cell.addEventListener('click', () => showDetail(item, buildMain));
           }
-          cell.addEventListener('click', () => showDetail(item, buildMain));
+
           grid.appendChild(cell);
         });
 
