@@ -48,8 +48,10 @@ function setLang(lang) {
 
 function showCaseSelect(lang, t, appEl) {
   const saved = loadProgress();
+  const menuScreen = appEl.querySelector('.menu-screen');
+  menuScreen.style.display = '';
 
-  appEl.innerHTML = `
+  menuScreen.innerHTML = `
     <div class="case-select-screen">
       <div class="case-select-title">${t('cases.title')}</div>
       <div class="case-select-subtitle">${t('cases.subtitle')}</div>
@@ -96,7 +98,7 @@ function showCaseSelect(lang, t, appEl) {
   `;
 
   // Case card clicks
-  appEl.querySelectorAll('.case-card').forEach(card => {
+  menuScreen.querySelectorAll('.case-card').forEach(card => {
     card.addEventListener('click', () => {
       const caseEntry = CASE_LIBRARY.find(c => c.id === card.dataset.case);
       const seed = caseEntry ? resolveSeed(caseEntry) : Date.now();
@@ -107,10 +109,10 @@ function showCaseSelect(lang, t, appEl) {
 
   // Resume banner
   if (saved) {
-    appEl.querySelector('.btn-resume')?.addEventListener('click', () => {
+    menuScreen.querySelector('.btn-resume')?.addEventListener('click', () => {
       startIntro(saved.lang, saved.seed, appEl, saved.capturedIds || []);
     });
-    appEl.querySelector('.btn-discard')?.addEventListener('click', () => {
+    menuScreen.querySelector('.btn-discard')?.addEventListener('click', () => {
       clearProgress();
       showCaseSelect(lang, t, appEl);
     });
@@ -223,7 +225,10 @@ function showCaseIntro(scenario, t, appEl, onProceed) {
     ? `Sospechas que ${s.name} podría estar siendo infiel. Tienes acceso a su teléfono. Encuentra las pruebas.`
     : `You suspect ${s.name} might be cheating. You have access to his phone. Find the evidence.`;
 
-  appEl.innerHTML = `
+  const menuScreen = appEl.querySelector('.menu-screen');
+  menuScreen.style.display = '';
+
+  menuScreen.innerHTML = `
     <div class="case-intro-screen">
       <div class="case-intro-card">
         <div class="case-intro-avatar" style="background:${s.avatarColor}">
@@ -241,7 +246,7 @@ function showCaseIntro(scenario, t, appEl, onProceed) {
     </div>
   `;
 
-  appEl.querySelector('.case-intro-btn').addEventListener('click', onProceed);
+  menuScreen.querySelector('.case-intro-btn').addEventListener('click', onProceed);
 }
 
 // ── Intro ─────────────────────────────────────────────────────────────────────
@@ -250,11 +255,11 @@ function startIntro(lang, seed, appEl, resumedCapturedIds = []) {
   const scenario = generateScenario(seed, lang);
   const t = createI18n(lang);
 
-  // Hide menu
-  appEl.querySelector('.menu-screen').style.display = 'none';
-
   // Show case intro card, then proceed to Instagram animation
   showCaseIntro(scenario, t, appEl, () => {
+    // Hide menu-screen (z-index 1000) so intro overlay is visible
+    appEl.querySelector('.menu-screen').style.display = 'none';
+
     // Inject bounce keyframes once
     if (!document.getElementById('intro-keyframes')) {
       const style = document.createElement('style');
