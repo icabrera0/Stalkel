@@ -101,6 +101,108 @@ const ALL_HERRING = Object.values(EVIDENCE_POOL).flat().filter(e => e.type === '
 
 const AVATAR_COLORS = ['#FF6B9D','#C77DFF','#74C0FC','#69DB7C','#FFD43B','#FF8CC8','#845EF7','#FFA94D','#63E6BE'];
 
+function generatePhone(rng) {
+  const prefixes = ['634', '612', '699', '677', '655', '744', '787'];
+  const prefix = rng.pick(prefixes);
+  const digits = Array.from({length: 6}, () => rng.nextInt(0, 9)).join('');
+  return `+34 ${prefix} ${digits.slice(0,3)} ${digits.slice(3)}`;
+}
+
+function generateContacts(rng, pools, ctx) {
+  const items = [];
+
+  // Always include girlfriend
+  items.push({
+    id: 'ct_girlfriend',
+    evidenceId: null,
+    name: ctx.girlfriend.name,
+    phone: generatePhone(rng),
+    avatarColor: ctx.girlfriend.avatarColor,
+    relation: ctx.lang === 'es' ? 'Novia' : 'Girlfriend',
+    isSuspicious: false,
+  });
+
+  // 4-6 normal filler contacts
+  const normalCount = rng.nextInt(4, 6);
+  for (let i = 0; i < normalCount; i++) {
+    const allNames = [...pools.maleNames, ...pools.femaleNames];
+    const name = rng.pick(allNames);
+    items.push({
+      id: `ct_filler_${i}`,
+      evidenceId: null,
+      name,
+      phone: generatePhone(rng),
+      avatarColor: rng.pick(['#FF6B9D','#C77DFF','#74C0FC','#69DB7C','#FFD43B','#845EF7']),
+      relation: null,
+      isSuspicious: false,
+    });
+  }
+
+  // Guilty run: add the secret contact with an aliased name
+  if (ctx.outcome === 'guilty') {
+    const aliases = ctx.lang === 'es'
+      ? ['Cariño 🌹','Carlos del gym','Andrea trabajo','Compañero/a','Primo/a']
+      : ['Darling 🌹','Gym buddy','Work colleague','Coworker','Cousin'];
+    const alias = rng.pick(aliases);
+    items.push({
+      id: 'ct_secret',
+      evidenceId: 'wa_contact_alias',
+      name: alias,
+      phone: generatePhone(rng),
+      avatarColor: ctx.secretContact.avatarColor,
+      relation: null,
+      isSuspicious: true,
+      realName: ctx.secretContact.name,
+    });
+  }
+
+  return { items: rng.shuffle(items) };
+}
+
+function generateQuestions(rng, lang, outcome, realEvidenceIds, ctx) {
+  const es = lang === 'es';
+
+  return [
+    {
+      id: 'q1',
+      unlockAfter: null,
+      question: es
+        ? `¿Cuánto tiempo llevan juntos ${ctx.suspect.name} y ${ctx.girlfriend.name}?`
+        : `How long have ${ctx.suspect.name} and ${ctx.girlfriend.name} been together?`,
+      keywords: [String(ctx.relationshipMonths), 'mes', 'month', 'año', 'year'],
+      hintText: es
+        ? 'Mira los mensajes de WhatsApp o Instagram para encontrar referencias a su aniversario.'
+        : 'Check WhatsApp or Instagram messages for anniversary references.',
+    },
+    {
+      id: 'q2',
+      unlockAfter: realEvidenceIds[0] ?? null,
+      question: es
+        ? `¿Quién crees que se oculta tras el contacto sospechoso?`
+        : `Who do you think is hidden behind the suspicious contact?`,
+      keywords: outcome === 'guilty'
+        ? [ctx.secretContact.name.toLowerCase().split(' ')[0], 'chica', 'mujer', 'girl', 'woman', 'desconocida', 'unknown']
+        : ['nadie', 'nobody', 'no', 'inocente', 'innocent'],
+      hintText: es
+        ? 'Revisa la galería y los mensajes de WhatsApp para identificar a esta persona.'
+        : 'Check the gallery and WhatsApp messages to identify this person.',
+    },
+    {
+      id: 'q3',
+      unlockAfter: realEvidenceIds[2] ?? realEvidenceIds[0] ?? null,
+      question: es
+        ? `¿Cuál es tu conclusión final? ¿Es ${ctx.suspect.name} infiel?`
+        : `What is your final conclusion? Is ${ctx.suspect.name} cheating?`,
+      keywords: outcome === 'guilty'
+        ? ['sí', 'si', 'yes', 'infiel', 'cheating', 'engañando', 'culpable', 'guilty']
+        : ['no', 'inocente', 'innocent', 'fiel', 'faithful'],
+      hintText: es
+        ? 'Revisa todo el tablero de pruebas y busca patrones entre las fechas y ubicaciones.'
+        : 'Review your full evidence board and look for patterns in dates and locations.',
+    },
+  ];
+}
+
 function generateUsername(rng, name, pools) {
   const base = name.toLowerCase().replace(/[áàäâ]/g,'a').replace(/[éèëê]/g,'e').replace(/[íìïî]/g,'i').replace(/[óòöô]/g,'o').replace(/[úùüû]/g,'u').replace(/[^a-z]/g,'');
   const suffix = rng.pick(pools.usernameSuffixes);
@@ -1100,14 +1202,16 @@ function generateAppContent(rng, lang, pools, ctx) {
   }
   if (realEvidenceIds.includes('gal_deleted_bin')) {
     for (let i = 0; i < 4; i++) {
-      galItems.push(item(`gal_ev_deleted${i}`, i === 0 ? 'gal_deleted_bin' : null, {
+      const deletedItem = item(`gal_ev_deleted${i}`, i === 0 ? 'gal_deleted_bin' : null, {
         subtype: 'deleted',
         imageColor: rng.pick(['#FFB6C1','#D2B48C','#87CEEB','#FFD700']),
         imageEmoji: rng.pick(['📸','🤳','🛏️','💐']),
         caption: lang === 'es' ? 'Eliminada hoy' : 'Deleted today',
         date: lang === 'es' ? 'Hoy' : 'Today',
         album: lang === 'es' ? 'Papelera' : 'Trash'
-      }));
+      });
+      if (i === 0) deletedItem.recovered = false;
+      galItems.push(deletedItem);
     }
   }
 
@@ -1152,6 +1256,15 @@ function generateAppContent(rng, lang, pools, ctx) {
       date: `${rng.nextInt(1,28)} ${rng.pick(lang==='es'?['ene','feb']:['Jan','Feb'])}`,
       album: lang === 'es' ? 'Recientes' : 'Recents'
     }));
+  }
+
+  // ── LOCKED FLAG on WhatsApp items (guilty runs only) ─────────────────────
+  if (outcome === 'guilty' && realEvidenceIds.length > 1) {
+    const lockedItem = waItems.find(it => it.evidenceId === 'wa_deleted_msgs' || it.evidenceId === 'wa_emoji_heavy');
+    if (lockedItem) {
+      lockedItem.locked = true;
+      lockedItem.unlockedBy = realEvidenceIds[0] ?? null;
+    }
   }
 
   // ── MESSAGES (SMS) ────────────────────────────────────────────────────────
@@ -1316,6 +1429,8 @@ function generateAppContent(rng, lang, pools, ctx) {
     });
   }
 
+  const contacts = generateContacts(rng, pools, { suspect, girlfriend, secretContact, outcome, lang });
+
   return {
     instagram: { items: igItems },
     whatsapp: { items: waItems },
@@ -1325,7 +1440,8 @@ function generateAppContent(rng, lang, pools, ctx) {
     gallery: { items: galItems },
     messages: { items: msgItems },
     calendar: { monthName: calMonthName, monthIdx: calMonthIdx, year: calYear, events: calEvents },
-    notes: { items: notesItems }
+    notes: { items: notesItems },
+    contacts,
   };
 }
 
@@ -1370,6 +1486,8 @@ export function generateScenario(seed, lang) {
     secretRestaurant, hotelName, secretAddress, gymName, monthsCheating
   });
 
+  const questions = generateQuestions(rng, lang, outcome, realEvidenceIds, { suspect, girlfriend, secretContact, relationshipMonths });
+
   return {
     seed,
     lang,
@@ -1382,6 +1500,7 @@ export function generateScenario(seed, lang) {
     secretRestaurant,
     realEvidenceIds,
     redHerringIds,
-    appContent
+    appContent,
+    questions,
   };
 }
