@@ -14,6 +14,8 @@ import * as Messages from './apps/messages.js';
 import * as Calendar from './apps/calendar.js';
 import * as Notes from './apps/notes.js';
 import * as Contacts from './apps/contacts.js';
+import { CASE_LIBRARY, resolveSeed } from './cases.js';
+import { loadProgress, clearProgress } from './storage.js';
 
 const APPS = {
   instagram: Instagram,
@@ -38,6 +40,80 @@ function getLang() {
 
 function setLang(lang) {
   localStorage.setItem('stalkie_lang', lang);
+}
+
+// ── Case Select ──────────────────────────────────────────────────────────────
+
+function showCaseSelect(lang, t, appEl) {
+  const saved = loadProgress();
+
+  appEl.innerHTML = `
+    <div class="case-select-screen">
+      <div class="case-select-title">${t('cases.title')}</div>
+      <div class="case-select-subtitle">${t('cases.subtitle')}</div>
+      ${saved ? `<div class="resume-banner">
+        <span>${lang === 'es' ? '▶ Reanudar investigación' : '▶ Resume investigation'}</span>
+        <button class="btn-resume">${lang === 'es' ? 'Continuar' : 'Continue'}</button>
+        <button class="btn-discard">✕</button>
+      </div>` : ''}
+      <div class="case-cards">
+        <div class="case-card random-card" data-case="random">
+          <div class="case-card-body">
+            <span class="case-card-badge">${t('cases.free_badge')}</span>
+            <div class="case-card-title">${t('cases.random_title')}</div>
+            <div class="case-card-subtitle">${t('cases.random_subtitle')}</div>
+          </div>
+          <div class="case-card-arrow">→</div>
+        </div>
+        <div class="case-card" data-case="case_001">
+          <div class="case-card-body">
+            <span class="case-card-badge">${t('cases.free_badge')}</span>
+            <div class="case-card-title">${t('cases.fixed_1_title')}</div>
+            <div class="case-card-subtitle">${t('cases.fixed_1_subtitle')}</div>
+          </div>
+          <div class="case-card-arrow">→</div>
+        </div>
+        <div class="case-card" data-case="case_002">
+          <div class="case-card-body">
+            <span class="case-card-badge">${t('cases.free_badge')}</span>
+            <div class="case-card-title">${t('cases.fixed_2_title')}</div>
+            <div class="case-card-subtitle">${t('cases.fixed_2_subtitle')}</div>
+          </div>
+          <div class="case-card-arrow">→</div>
+        </div>
+        <div class="case-card" data-case="case_003">
+          <div class="case-card-body">
+            <span class="case-card-badge">${t('cases.free_badge')}</span>
+            <div class="case-card-title">${t('cases.fixed_3_title')}</div>
+            <div class="case-card-subtitle">${t('cases.fixed_3_subtitle')}</div>
+          </div>
+          <div class="case-card-arrow">→</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Case card clicks
+  appEl.querySelectorAll('.case-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const caseEntry = CASE_LIBRARY.find(c => c.id === card.dataset.case);
+      const seed = resolveSeed(caseEntry);
+      clearProgress();
+      startIntro(lang, seed, appEl);
+    });
+  });
+
+  // Resume banner
+  if (saved) {
+    appEl.querySelector('.btn-resume')?.addEventListener('click', () => {
+      clearProgress();
+      startIntro(saved.lang, saved.seed, appEl);
+    });
+    appEl.querySelector('.btn-discard')?.addEventListener('click', () => {
+      clearProgress();
+      showCaseSelect(lang, t, appEl);
+    });
+  }
 }
 
 // ── Menu ─────────────────────────────────────────────────────────────────────
@@ -133,13 +209,12 @@ function showMenu(appEl, lang) {
     playBtn.style.transform = 'scale(1)';
     playBtn.style.boxShadow = '0 8px 24px rgba(255,107,157,0.4)';
   });
-  playBtn.addEventListener('click', () => { audio.tap(); startIntro(lang, appEl); });
+  playBtn.addEventListener('click', () => { audio.tap(); showCaseSelect(lang, t, appEl); });
 }
 
 // ── Intro ─────────────────────────────────────────────────────────────────────
 
-function startIntro(lang, appEl) {
-  const seed = Date.now();
+function startIntro(lang, seed, appEl) {
   const scenario = generateScenario(seed, lang);
   const t = createI18n(lang);
 
