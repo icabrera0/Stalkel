@@ -17,6 +17,7 @@ import * as Contacts from './apps/contacts.js';
 import { CASE_LIBRARY, resolveSeed } from './cases.js';
 import { loadProgress, clearProgress } from './storage.js';
 import { createQuestions } from './questions.js';
+import { createHints } from './hints.js';
 
 const APPS = {
   instagram: Instagram,
@@ -511,6 +512,11 @@ function startGame(scenario, t, appEl) {
 
   // Evidence board (phoneEl = .phone)
   const board = createEvidenceBoard(phoneEl, scenario, t);
+
+  // Hint system
+  const hints = createHints(phoneEl, scenario, t, () => board.getCollected());
+  hints.updateBtn();
+  document.getElementById('btn-hints')?.addEventListener('click', () => hints.showHint());
 
   // Questions overlay
   const questions = createQuestions(phoneEl, scenario, t);

@@ -967,3 +967,67 @@ body {
   text-align: center;
   margin-top: 10px;
 }
+
+/* ── Hints ── */
+.btn-hint-pill {
+  padding: 6px 14px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 99px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  font-family: inherit;
+}
+.btn-hint-pill:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.hint-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 65;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+.hint-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.hint-card {
+  width: 80%;
+  max-width: 280px;
+  background: #1e1e2e;
+  border-radius: 20px;
+  padding: 24px;
+  text-align: center;
+  border: 1px solid rgba(255,215,0,0.2);
+}
+.hint-title {
+  color: #FFD43B;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.hint-text {
+  color: rgba(255,255,255,0.85);
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+.btn-hint-close {
+  padding: 10px 24px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+}
