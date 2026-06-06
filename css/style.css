@@ -437,8 +437,8 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
   z-index: 1000;
+  overflow-y: auto;
 }
 
 .menu-content {
@@ -802,12 +802,12 @@ body {
 
 /* ── Case Select ── */
 .case-select-screen {
-  min-height: 100vh;
-  background: linear-gradient(160deg, #0f0c29, #302b63, #24243e);
+  width: 100%;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 48px 24px 32px;
+  padding: 48px 24px 40px;
   box-sizing: border-box;
 }
 .case-select-title {
@@ -886,8 +886,8 @@ body {
 
 /* ── Case Intro Card ── */
 .case-intro-screen {
-  min-height: 100vh;
-  background: linear-gradient(160deg, #1a1a2e, #16213e, #0f3460);
+  width: 100%;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
