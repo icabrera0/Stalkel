@@ -1,6 +1,7 @@
 const KEY = 'stalkie_progress';
 
 export function saveProgress(seed, lang, capturedIds) {
+  if (!Array.isArray(capturedIds)) capturedIds = [];
   localStorage.setItem(KEY, JSON.stringify({ seed, lang, capturedIds }));
 }
 
