@@ -27,6 +27,46 @@ export const STRINGS = {
     'app.messages': 'Mensajes',
     'app.calendar': 'Calendario',
     'app.notes': 'Notas',
+    'app.contacts': 'Contactos',
+    // Case select
+    'cases.title': 'Casos',
+    'cases.subtitle': 'Elige una investigación',
+    'cases.free_badge': 'Gratis',
+    'cases.random_title': 'Caso Aleatorio',
+    'cases.random_subtitle': 'Nuevo sospechoso cada vez',
+    'cases.fixed_1_title': 'El Doble Juego',
+    'cases.fixed_1_subtitle': '¿Quién es "Cariño"?',
+    'cases.fixed_2_title': 'Viaje de Negocios',
+    'cases.fixed_2_subtitle': 'El hotel no cuadra',
+    'cases.fixed_3_title': 'Sólo Amigos',
+    'cases.fixed_3_subtitle': 'Mensajes borrados, coartada rota',
+    'cases.play_btn': 'Investigar →',
+    // Case intro
+    'intro_card.relationship': 'Juntos {months} meses',
+    'intro_card.city': '{city}',
+    'intro_card.start_btn': 'Abrir el teléfono →',
+    // Questions
+    'questions.title': '📋 Pregunta desbloqueada',
+    'questions.submit': 'Responder',
+    'questions.skip': 'Saltar',
+    'questions.correct': '✅ Correcto',
+    'questions.wrong': '❌ No exactamente',
+    'questions.hint_used': 'Pista usada',
+    // Hints
+    'hints.btn': '💡 Pista',
+    'hints.remaining': '{n} pistas',
+    'hints.empty': 'Sin pistas disponibles',
+    'hints.title': '💡 Pista',
+    'hints.close': 'Cerrar',
+    // Contacts app
+    'contacts.all': 'Todos',
+    'contacts.search_placeholder': 'Buscar contacto…',
+    // Gallery recovery
+    'gallery.recover': '🔄 Recuperar',
+    'gallery.recovering': 'Recuperando…',
+    'gallery.recovered': 'Foto recuperada',
+    // Locked content
+    'locked.hint': '🔒 Bloqueado — busca más pistas',
     // Evidence board
     'evidence.title': 'Pruebas',
     'evidence.empty': 'Aún no has capturado nada.\nExplora las apps.',
@@ -162,6 +202,46 @@ export const STRINGS = {
     'app.messages': 'Messages',
     'app.calendar': 'Calendar',
     'app.notes': 'Notes',
+    'app.contacts': 'Contacts',
+    // Case select
+    'cases.title': 'Cases',
+    'cases.subtitle': 'Choose an investigation',
+    'cases.free_badge': 'Free',
+    'cases.random_title': 'Random Case',
+    'cases.random_subtitle': 'New suspect every time',
+    'cases.fixed_1_title': 'Double Game',
+    'cases.fixed_1_subtitle': 'Who is "Darling"?',
+    'cases.fixed_2_title': 'Business Trip',
+    'cases.fixed_2_subtitle': "The hotel doesn't add up",
+    'cases.fixed_3_title': 'Just Friends',
+    'cases.fixed_3_subtitle': 'Deleted messages, broken alibi',
+    'cases.play_btn': 'Investigate →',
+    // Case intro
+    'intro_card.relationship': 'Together {months} months',
+    'intro_card.city': '{city}',
+    'intro_card.start_btn': 'Open his phone →',
+    // Questions
+    'questions.title': '📋 Question unlocked',
+    'questions.submit': 'Answer',
+    'questions.skip': 'Skip',
+    'questions.correct': '✅ Correct',
+    'questions.wrong': '❌ Not quite',
+    'questions.hint_used': 'Hint used',
+    // Hints
+    'hints.btn': '💡 Hint',
+    'hints.remaining': '{n} hints',
+    'hints.empty': 'No hints left',
+    'hints.title': '💡 Hint',
+    'hints.close': 'Close',
+    // Contacts app
+    'contacts.all': 'All',
+    'contacts.search_placeholder': 'Search contacts…',
+    // Gallery recovery
+    'gallery.recover': '🔄 Recover',
+    'gallery.recovering': 'Recovering…',
+    'gallery.recovered': 'Photo recovered',
+    // Locked content
+    'locked.hint': '🔒 Locked — find more clues',
     // Evidence board
     'evidence.title': 'Evidence',
     'evidence.empty': "Nothing captured yet.\nExplore the apps.",
