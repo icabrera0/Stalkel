@@ -187,14 +187,13 @@ export function render(container, data, scenario, t, onCapture) {
     document.addEventListener('evidence:captured', e => {
       if (!data || !data.items) return;
       data.items.forEach(item => {
-        if (item.locked && item.unlockedBy === e.detail.evidenceId && !item._unlocked) {
+        if (item.locked && item.unlockedBy != null && item.unlockedBy === e.detail.evidenceId && !item._unlocked) {
           item._unlocked = true;
           const row = list.querySelector(`.wa-thread[data-id="${item.id}"]`);
           if (row) {
             row.classList.remove('wa-thread-locked');
             const previewEl = row.querySelector('.wa-thread-preview');
             if (previewEl) previewEl.textContent = item.lastMessage;
-            row.onclick = () => showDetail(item);
           }
         }
       });
