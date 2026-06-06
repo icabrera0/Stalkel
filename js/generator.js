@@ -1488,8 +1488,6 @@ export function generateScenario(seed, lang) {
     secretAlias
   });
 
-  const questions = generateQuestions(rng, lang, outcome, realEvidenceIds, { suspect, girlfriend, secretContact, relationshipMonths });
-
   return {
     seed,
     lang,
@@ -1503,6 +1501,5 @@ export function generateScenario(seed, lang) {
     realEvidenceIds,
     redHerringIds,
     appContent,
-    questions,
   };
 }

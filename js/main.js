@@ -16,7 +16,6 @@ import * as Notes from './apps/notes.js';
 import * as Contacts from './apps/contacts.js';
 import { CASE_LIBRARY, resolveSeed } from './cases.js';
 import { loadProgress, clearProgress, saveProgress } from './storage.js';
-import { createQuestions } from './questions.js';
 import { createHints } from './hints.js';
 
 const APPS = {
@@ -132,64 +131,14 @@ function showMenu(appEl, lang) {
 
   menuScreen.innerHTML = `
     <div class="menu-content">
-      <div class="menu-title" style="
-        font-size: 3rem;
-        font-weight: 900;
-        background: linear-gradient(135deg, #FF6B9D, #C77DFF, #FF6B6B);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        letter-spacing: -1px;
-        margin-bottom: 8px;
-      ">Stalkie</div>
-      <div class="menu-subtitle" style="
-        color: rgba(255,255,255,0.75);
-        font-size: 1rem;
-        margin-bottom: 32px;
-        font-style: italic;
-      ">${t('menu.subtitle')}</div>
-      <div class="lang-btns" style="
-        display: flex;
-        gap: 12px;
-        margin-bottom: 36px;
-        justify-content: center;
-      ">
-        <button class="btn-lang${lang === 'es' ? ' active' : ''}" data-lang="es" style="
-          padding: 8px 20px;
-          border-radius: 20px;
-          border: 2px solid ${lang === 'es' ? '#FF6B9D' : 'rgba(255,255,255,0.3)'};
-          background: ${lang === 'es' ? 'linear-gradient(135deg,#FF6B9D,#C77DFF)' : 'transparent'};
-          color: white;
-          font-weight: 600;
-          cursor: pointer;
-          font-size: 0.9rem;
-          transition: all 0.2s;
-        ">Español</button>
-        <button class="btn-lang${lang === 'en' ? ' active' : ''}" data-lang="en" style="
-          padding: 8px 20px;
-          border-radius: 20px;
-          border: 2px solid ${lang === 'en' ? '#FF6B9D' : 'rgba(255,255,255,0.3)'};
-          background: ${lang === 'en' ? 'linear-gradient(135deg,#FF6B9D,#C77DFF)' : 'transparent'};
-          color: white;
-          font-weight: 600;
-          cursor: pointer;
-          font-size: 0.9rem;
-          transition: all 0.2s;
-        ">English</button>
+      <div class="menu-phone-icon">📱</div>
+      <div class="menu-title">Stalkie</div>
+      <div class="menu-subtitle">${t('menu.subtitle')}</div>
+      <div class="menu-lang-btns">
+        <button class="btn-lang${lang === 'es' ? ' active' : ''}" data-lang="es">Español</button>
+        <button class="btn-lang${lang === 'en' ? ' active' : ''}" data-lang="en">English</button>
       </div>
-      <button class="btn-play" style="
-        padding: 16px 48px;
-        border-radius: 50px;
-        border: none;
-        background: linear-gradient(135deg, #FF6B9D, #C77DFF);
-        color: white;
-        font-size: 1.2rem;
-        font-weight: 800;
-        cursor: pointer;
-        box-shadow: 0 8px 24px rgba(255,107,157,0.4);
-        letter-spacing: 0.5px;
-        transition: transform 0.15s, box-shadow 0.15s;
-      ">${t('menu.play')}</button>
+      <button class="btn-play">${t('menu.play')}</button>
     </div>
   `;
 
@@ -202,17 +151,8 @@ function showMenu(appEl, lang) {
     });
   });
 
-  // Play button hover + click
-  const playBtn = menuScreen.querySelector('.btn-play');
-  playBtn.addEventListener('mouseenter', () => {
-    playBtn.style.transform = 'scale(1.05)';
-    playBtn.style.boxShadow = '0 12px 32px rgba(255,107,157,0.6)';
-  });
-  playBtn.addEventListener('mouseleave', () => {
-    playBtn.style.transform = 'scale(1)';
-    playBtn.style.boxShadow = '0 8px 24px rgba(255,107,157,0.4)';
-  });
-  playBtn.addEventListener('click', () => { audio.tap(); showCaseSelect(lang, t, appEl); });
+  // Play button click
+  menuScreen.querySelector('.btn-play').addEventListener('click', () => { audio.tap(); showCaseSelect(lang, t, appEl); });
 }
 
 // ── Case Intro Card ──────────────────────────────────────────────────────────
@@ -533,14 +473,6 @@ function startGame(scenario, t, appEl, resumedCapturedIds = []) {
   hints.updateBtn();
   document.getElementById('btn-hints')?.addEventListener('click', () => hints.showHint());
 
-  // Questions overlay
-  const questions = createQuestions(phoneEl, scenario, t);
-  document.addEventListener('evidence:captured', e => {
-    questions.checkUnlock(e.detail.evidenceId);
-  });
-
-  // Store questions reference for cleanup (exposed for future use)
-  window.stalkieQuestions = questions;
 
   // Evidence button → show board → verdict on callback
   const btnEvidence = appEl.querySelector('.btn-evidence');
